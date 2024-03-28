@@ -1,0 +1,9 @@
+*tmposz_5zqs
+*.csv
+*.parquet
+*.json
+*.geojson
+*.duckdb*
+*.db
+*dagster_venv
+__pycache__

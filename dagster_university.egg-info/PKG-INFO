@@ -1,0 +1,14 @@
+Metadata-Version: 2.1
+Name: dagster_university
+Version: 0.0.0
+Requires-Dist: dagster==1.6.*
+Requires-Dist: dagster-cloud
+Requires-Dist: dagster-duckdb
+Requires-Dist: geopandas
+Requires-Dist: kaleido
+Requires-Dist: pandas
+Requires-Dist: plotly
+Requires-Dist: shapely
+Provides-Extra: dev
+Requires-Dist: dagster-webserver; extra == "dev"
+Requires-Dist: pytest; extra == "dev"
