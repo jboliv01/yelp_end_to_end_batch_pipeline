@@ -12,3 +12,4 @@ Requires-Dist: shapely
 Provides-Extra: dev
 Requires-Dist: dagster-webserver; extra == "dev"
 Requires-Dist: pytest; extra == "dev"
+Requires-Dist: kaggle; extra == "dev"

@@ -10,3 +10,4 @@ shapely
 [dev]
 dagster-webserver
 pytest
+kaggle
