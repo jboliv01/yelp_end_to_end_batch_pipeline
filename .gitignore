@@ -1,9 +1,11 @@
 *tmposz_5zqs
+*tmp9u30afiv
 *.csv
 *.parquet
 *.json
 *.geojson
 *.duckdb*
 *.db
+*.pdf
 *dagster_venv
 __pycache__

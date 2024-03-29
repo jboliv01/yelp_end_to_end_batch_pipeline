@@ -7,6 +7,8 @@ setup(
         "dagster==1.6.*",
         "dagster-cloud",
         "dagster-duckdb",
+        "dagster-aws",
+        "dagster-pyspark",
         "geopandas",
         "kaleido",
         "pandas",
