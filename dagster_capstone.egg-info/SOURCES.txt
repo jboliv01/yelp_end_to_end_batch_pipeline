@@ -10,8 +10,10 @@ dagster_capstone.egg-info/requires.txt
 dagster_capstone.egg-info/top_level.txt
 dagster_capstone/assets/__init__.py
 dagster_capstone/assets/constants.py
+dagster_capstone/assets/kaggle.py
 dagster_capstone/assets/metrics.py
 dagster_capstone/assets/requests.py
+dagster_capstone/assets/spark.py
 dagster_capstone/assets/trips.py
 dagster_capstone/jobs/__init__.py
 dagster_capstone/partitions/__init__.py

@@ -14,6 +14,7 @@ setup(
         "pandas",
         "plotly",
         "shapely",
+        "kaggle"
     ],
-    extras_require={"dev": ["dagster-webserver", "pytest", "kaggle"]},
+    extras_require={"dev": ["dagster-webserver", "pytest"]},
 )

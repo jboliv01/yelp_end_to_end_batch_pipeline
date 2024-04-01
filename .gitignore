@@ -1,5 +1,4 @@
-*tmposz_5zqs
-*tmp9u30afiv
+*tmph1o7vqkp
 *.csv
 *.parquet
 *.json
@@ -9,3 +8,5 @@
 *.pdf
 *dagster_venv
 __pycache__
+.env
+*dagster_capstone.egg-info*
