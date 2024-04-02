@@ -7,7 +7,7 @@ from dagster_aws.s3 import S3Resource
 from dagster_pyspark import PySparkResource
 
 from .assets import kaggle, spark
-#from .assets.spark import ParquetIOManager
+from .assets.spark import ParquetIOManager
 
 # trip_assets = load_assets_from_modules([trips])
 # metric_assets = load_assets_from_modules([metrics])
@@ -41,6 +41,6 @@ defs = Definitions(
             "s3_bucket": "de-capstone-project",
             "s3_key_prefix": "yelp/raw/"
         }),
-        #"io_manager": ParquetIOManager(pyspark=emr_pyspark, path_prefix="s3://de-capstone-project/production"),
+        "io_manager": ParquetIOManager(pyspark=emr_pyspark, path_prefix="s3://de-capstone-project/production"),
     },
 )
