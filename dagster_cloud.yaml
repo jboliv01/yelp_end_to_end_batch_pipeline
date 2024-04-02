@@ -1,7 +1,7 @@
 locations:
-  - code_source:
-        package_name: dagster_codespaces/dagster_capstone
-      location_name: yelp-e2e-capstone
-  - code_source:
-      package_name: quickstart_etl
-    location_name: data-engineering-capstone
+  - location_name: yelp-e2e-capstone
+    code_source:
+      package_name: dagster_capstone
+    build:
+      directory: ./dagster_codespaces/dagster_capstone
+      
