@@ -43,7 +43,7 @@ from pyspark.sql.types import IntegerType, StringType, StructField, StructType
 #     return people.filter(people["age"] > 50)
 
 @asset(
-    ins={'kaggle_file': AssetIn}
+    ins={'kaggle_file': AssetIn(dagster_type=str)}
 )
 def yelp_businesses(pyspark: PySparkResource, kaggle_file: str) -> DataFrame:
     spark = pyspark.spark_session
@@ -57,20 +57,20 @@ def yelp_businesses(pyspark: PySparkResource, kaggle_file: str) -> DataFrame:
 
     return df
 
-@asset(
-    ins={'kaggle_file': AssetIn}
-)
-def yelp_users(pyspark_step_launcher: ResourceParam[Any]) -> DataFrame:
-    return 1
+# @asset(
+#     ins={'kaggle_file': AssetIn}
+# )
+# def yelp_users(pyspark_step_launcher: ResourceParam[Any]) -> DataFrame:
+#     return 1
 
-@asset(
-    ins={'kaggle_file': AssetIn}
-)
-def yelp_reviews(pyspark_step_launcher: ResourceParam[Any]) -> DataFrame:
-    return 1
+# @asset(
+#     ins={'kaggle_file': AssetIn}
+# )
+# def yelp_reviews(pyspark_step_launcher: ResourceParam[Any]) -> DataFrame:
+#     return 1
 
-@asset(
-    ins={'kaggle_file': AssetIn}
-)
-def yelp_ratings(pyspark_step_launcher: ResourceParam[Any]) -> DataFrame:
-    return 1
+# @asset(
+#     ins={'kaggle_file': AssetIn}
+# )
+# def yelp_ratings(pyspark_step_launcher: ResourceParam[Any]) -> DataFrame:
+#     return 1

@@ -44,7 +44,7 @@ def kaggle_file_manager():
         "file_path": Field(str, default_value=str(Path(__file__).parents[3] / 'data' / 'raw' / 'kaggle'))
     }
 )
-def kaggle_file(context):
+def kaggle_file(context) -> str:
     dataset = context.op_config["kaggle_dataset"]
     file_path = context.op_config["file_path"]
 
