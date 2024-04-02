@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Any
 
-from dagster import ConfigurableIOManager, ResourceParam, asset
+from dagster import ConfigurableIOManager, ResourceParam, asset, AssetIn
 from dagster_pyspark import PySparkResource
 from pyspark.sql import DataFrame, Row
 from pyspark.sql.types import IntegerType, StringType, StructField, StructType
@@ -43,7 +43,7 @@ from pyspark.sql.types import IntegerType, StringType, StructField, StructType
 #     return people.filter(people["age"] > 50)
 
 @asset(
-    deps=['kaggle_file']
+    ins={'kaggle_file': AssetIn}
 )
 def yelp_businesses(pyspark: PySparkResource, kaggle_file: str) -> DataFrame:
     spark = pyspark.spark_session
@@ -52,25 +52,25 @@ def yelp_businesses(pyspark: PySparkResource, kaggle_file: str) -> DataFrame:
 
     # Process the data (if needed) and then write back to S3 or another location
     # For example, writing the processed DataFrame back to S3 in Parquet format
-    output_path = "s3://de-capstone-project/processed/yelp_businesses/"
+    output_path = "s3://de-capstone-project/staging/yelp_businesses/"
     df.write.mode('overwrite').parquet(output_path)
 
     return df
 
 @asset(
-    deps=['kaggle_file']
+    ins={'kaggle_file': AssetIn}
 )
 def yelp_users(pyspark_step_launcher: ResourceParam[Any]) -> DataFrame:
     return 1
 
 @asset(
-    deps=['kaggle_file']
+    ins={'kaggle_file': AssetIn}
 )
 def yelp_reviews(pyspark_step_launcher: ResourceParam[Any]) -> DataFrame:
     return 1
 
 @asset(
-    deps=['kaggle_file']
+    ins={'kaggle_file': AssetIn}
 )
 def yelp_ratings(pyspark_step_launcher: ResourceParam[Any]) -> DataFrame:
     return 1
