@@ -1,42 +1,31 @@
-import boto3
-import s3fs
+from dagster import asset, AssetIn
 import polars as pl
-from dagster import asset, Field
+import os
 
-# Assume you have a Dagster resource for S3 access configured
 @asset(
-    required_resource_keys={'s3'},
-    config_schema={
-        's3_bucket': Field(str, is_required=True),
-        'input_key': Field(str, is_required=True),
-        'output_key': Field(str, is_required=True)
-    }
+    io_manager_key="polars_parquet_io_manager",
+    required_resource_keys={"s3"},
+    ins={'kaggle_file': AssetIn()}
 )
-def process_large_json_with_polars(context):
-    s3_bucket = context.op_config['s3_bucket']
-    input_key = context.op_config['input_key']
-    output_key = context.op_config['output_key']
+def json_to_parquet(context, kaggle_file: str) -> pl.DataFrame:
 
-    # Configure S3 file system for Polars
-    fs = s3fs.S3FileSystem(client_kwargs={'endpoint_url': 'https://s3.amazonaws.com'})
-    file_path = f's3://{s3_bucket}/{input_key}'
+    json_filename = "specific_file.json"
+    json_file_path = os.path.join(kaggle_file, json_filename)
+    context.log.info(f"json path {json_file_path}")
 
-    # Read the JSON file lazily
-    lazy_df = pl.scan_json(file_path, storage_options={'s3': fs})
+    # Read the JSON file into a Polars DataFrame
+    df = pl.read_json(json_file_path)
 
-    # Define your data processing steps here
-    # This is just an example; you would replace this with your actual processing logic
-    processed_df = lazy_df.filter(pl.col('some_column').is_not_null())
+    # Define the S3 path for the output Parquet file
+    s3_bucket = "de-capstone-project"
+    s3_key = f"pipeline-output/{os.path.basename(json_filename).replace('.json', '.parquet')}"
+    context.log.info(f"Writing Parquet to: s3://{s3_bucket}/{s3_key}")
 
-    # Materialize the lazy frame to a DataFrame
-    result_df = processed_df.collect()
+    # Write the DataFrame to S3 in Parquet format
+    s3_path = f"s3://{s3_bucket}/{s3_key}"
+    df.write_parquet(s3_path)
 
-    # Convert the Polars DataFrame to a Parquet file in memory
-    output_buffer = result_df.write_parquet()
-
-    # Write the Parquet data to S3
-    s3_client = context.resources.s3
-    s3_client.put_object(Bucket=s3_bucket, Key=output_key, Body=output_buffer.getvalue())
+    return df
 
 # @asset(
 #     ins={'kaggle_file': AssetIn}
