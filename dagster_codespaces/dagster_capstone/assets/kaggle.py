@@ -15,13 +15,23 @@ class KaggleFileManager(IOManager):
         bucket_name = context.resource_config['s3_bucket']
         s3_key_prefix = context.resource_config.get('s3_key_prefix', '')
         
+        # transfer_config = boto3.s3.transfer.TransferConfig(
+        #     multipart_threshold=1024 * 1024 * 100,  # 10 MB
+        #     multipart_chunksize=1024 * 1024 * 1,  # 10 MB per part
+        #     max_concurrency=6,
+        #     use_threads=True
+        # )
+
         # Assuming obj is the directory containing the downloaded files
         for file_name in os.listdir(obj):
             file_path = os.path.join(obj, file_name)
             if os.path.isfile(file_path):
                 s3_key = f"{s3_key_prefix}{file_name}"
+                file_size = os.path.getsize(file_path)
+                context.log.info(f"Uploading {file_name} to s3://{bucket_name}/{s3_key}")
+
                 s3.upload_file(file_path, bucket_name, s3_key)
-                context.log.info(f"Uploaded {file_name} to s3://{bucket_name}/{s3_key}")
+                context.log.info(f"Finished {file_name} to s3://{bucket_name}/{s3_key}")
 
     def load_input(self, context):
         # Loading input is not relevant for the download asset, but you could implement

@@ -1,8 +1,6 @@
 from pathlib import Path
 from typing import Any
 
-#from assets import constants
-
 from dagster import ConfigurableIOManager, ResourceParam, asset
 from dagster_pyspark import PySparkResource
 from pyspark.sql import DataFrame, Row
@@ -34,7 +32,6 @@ def people_over_50(pyspark_step_launcher: ResourceParam[Any], people: DataFrame)
     deps=['kaggle_file']
 )
 def yelp_businesses(pyspark_step_launcher: ResourceParam[Any]) -> DataFrame:
-    #path = constants.KAGGLE_FILE_PATH + '/business.json'
     return 1
     
 @asset(

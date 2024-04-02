@@ -4,6 +4,7 @@
 - ['Using Dagster with Spark'](https://docs.dagster.io/integrations/spark#asset-accepts-and-produces-dataframes-or-rdds)
 - ['emr_pyspark_launcher'](https://github.com/dagster-io/dagster/blob/master/python_modules/libraries/dagster-aws/dagster_aws/emr/pyspark_step_launcher.py)
 - ['create-default-roles for EMR Cluster'](https://docs.aws.amazon.com/cli/latest/reference/emr/create-default-roles.html#create-default-roles)
+- ['AWS S3 multipart upload documentation'](https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html#sdksupportformpu)
 
 ## Getting started
 
