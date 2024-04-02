@@ -9,10 +9,10 @@ setup(
         "dagster-duckdb",
         "dagster-aws",
         "dagster-pyspark",
+        "dagster-polars",
         "geopandas",
         "kaleido",
         "pandas",
-        "polars",
         "s3fs",
         "kaggle"
     ],
