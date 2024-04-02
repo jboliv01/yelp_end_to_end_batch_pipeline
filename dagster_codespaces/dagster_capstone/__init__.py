@@ -37,10 +37,10 @@ defs = Definitions(
         ),
         "pyspark": emr_pyspark,
         "s3": S3Resource(),
-        "io_manager": ParquetIOManager(pyspark=emr_pyspark, path_prefix="s3://de-capstone-project/production"),
         "kaggle_io_manager": kaggle.kaggle_file_manager.configured({
             "s3_bucket": "de-capstone-project",
             "s3_key_prefix": "yelp/raw/"
         }),
+        #"io_manager": ParquetIOManager(pyspark=emr_pyspark, path_prefix="s3://de-capstone-project/production"),
     },
 )
