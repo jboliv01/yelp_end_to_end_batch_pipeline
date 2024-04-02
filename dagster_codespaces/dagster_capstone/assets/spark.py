@@ -28,16 +28,14 @@ from pyspark.sql.types import IntegerType, StringType, StructField, StructType
 #     return people.filter(people["age"] > 50)
 
 @asset(
-    required_resource_keys={'pyspark'},
-    ins={'kaggle_file': AssetIn(dagster_type=str)}
+    required_resource_keys={'pyspark'}
 )
-def yelp_businesses(pyspark: PySparkResource, kaggle_file: str) -> DataFrame:
+def yelp_businesses(pyspark: PySparkResource, kaggle_file: AssetIn) -> DataFrame:
     spark = pyspark.spark_session
     file_path = f"{kaggle_file}yelp_academic_dataset_business.json"
     df = spark.read.json(file_path)
 
-    # Process the data (if needed) and then write back to S3 or another location
-    # For example, writing the processed DataFrame back to S3 in Parquet format
+    # Process the data and then write back to S3 or another location
     output_path = "s3://de-capstone-project/staging/yelp_businesses/"
     df.write.mode('overwrite').parquet(output_path)
 
