@@ -6,7 +6,7 @@ from dagster_aws.emr import emr_pyspark_step_launcher
 from dagster_aws.s3 import S3Resource
 from dagster_pyspark import PySparkResource
 
-from .assets import kaggle, spark
+from .assets import kaggle, spark, yelp
 from .assets.spark import ParquetIOManager
 
 # trip_assets = load_assets_from_modules([trips])
@@ -14,6 +14,7 @@ from .assets.spark import ParquetIOManager
 # request_assets = load_assets_from_modules([requests])
 kaggle_assets = load_assets_from_modules([kaggle])
 spark_assets = load_assets_from_modules([spark])
+yelp_asssets = load_assets_from_modules([yelp])
 
 # all_jobs = [trip_update_job, weekly_update_job, adhoc_request_job]
 # all_schedules = [trip_update_schedule, weekly_update_schedule]
@@ -22,7 +23,7 @@ spark_assets = load_assets_from_modules([spark])
 emr_pyspark = PySparkResource(spark_config={"spark.executor.memory": "2g"})
 
 defs = Definitions(
-    assets=[*kaggle_assets, *spark_assets,],
+    assets=[*kaggle_assets, *spark_assets, *yelp_asssets],
     resources={
         "pyspark_step_launcher": emr_pyspark_step_launcher.configured(
             {

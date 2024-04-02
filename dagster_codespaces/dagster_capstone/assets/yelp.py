@@ -1,21 +1,27 @@
 import boto3
-from dagster import asset, AssetIn, IOManager, io_manager, Field
+from dagster import asset, AssetIn, Out, Field
 import pandas as pd
 import polars as pl
 
 
-@asset(required_resource_keys={'s3'})
-def yelp_businesses(context, kaggle_file: AssetIn) -> pd.DataFrame:
+@asset(
+    required_resource_keys={'s3'},
+    config_schema={'s3_bucket': Field(str), 's3_key': Field(str)},
+    ins={'kaggle_file': AssetIn()},
+    outs={'processed_data': Out()}
+)
+def yelp_businesses(context) -> pl.DataFrame:
     s3_client = context.resources.s3
-    bucket_name='de-capstone-project' 
-    s3_key='yelp/raw/' 
-    s3_object = s3_client.get_object(Bucket=bucket_name, Key=s3_key)
+    s3_bucket = context.op_config['s3_bucket']
+    s3_key = context.op_config['s3_key'] + 'yelp_academic_dataset_business.json'
 
-    file_path = f"{kaggle_file}yelp_academic_dataset_business.json"
-    # Process the data and then write back to S3 or another location
-    output_path = "s3://de-capstone-project/staging/yelp_businesses/"
+    # Get the object from S3
+    obj = s3_client.get_object(Bucket=s3_bucket, Key=s3_key)
+    
+    # Read the file into a Polars dataframe
+    df = pl.read_json(obj['Body'])
 
-    return 1
+    return df
 
 # @asset(
 #     ins={'kaggle_file': AssetIn}
