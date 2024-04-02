@@ -28,7 +28,7 @@ from pyspark.sql.types import IntegerType, StringType, StructField, StructType
 #     return people.filter(people["age"] > 50)
 
 @asset
-def yelp_businesses(pyspark: PySparkResource, kaggle_file: AssetIn) -> DataFrame:
+def yelp_businesses(pyspark: PySparkResource, pyspark_step_launcher: ResourceParam[Any], kaggle_file: AssetIn) -> DataFrame:
     spark = pyspark.spark_session
     file_path = f"{kaggle_file}yelp_academic_dataset_business.json"
     df = spark.read.json(file_path)
