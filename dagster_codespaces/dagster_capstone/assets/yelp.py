@@ -1,27 +1,42 @@
 import boto3
-from dagster import asset, AssetIn, Out, Field
-import pandas as pd
+import s3fs
 import polars as pl
+from dagster import asset, Field
 
-
+# Assume you have a Dagster resource for S3 access configured
 @asset(
     required_resource_keys={'s3'},
-    config_schema={'s3_bucket': Field(str), 's3_key': Field(str)},
-    ins={'kaggle_file': AssetIn()},
-    outs={'processed_data': Out()}
+    config_schema={
+        's3_bucket': Field(str, is_required=True),
+        'input_key': Field(str, is_required=True),
+        'output_key': Field(str, is_required=True)
+    }
 )
-def yelp_businesses(context) -> pl.DataFrame:
-    s3_client = context.resources.s3
+def process_large_json_with_polars(context):
     s3_bucket = context.op_config['s3_bucket']
-    s3_key = context.op_config['s3_key'] + 'yelp_academic_dataset_business.json'
+    input_key = context.op_config['input_key']
+    output_key = context.op_config['output_key']
 
-    # Get the object from S3
-    obj = s3_client.get_object(Bucket=s3_bucket, Key=s3_key)
-    
-    # Read the file into a Polars dataframe
-    df = pl.read_json(obj['Body'])
+    # Configure S3 file system for Polars
+    fs = s3fs.S3FileSystem(client_kwargs={'endpoint_url': 'https://s3.amazonaws.com'})
+    file_path = f's3://{s3_bucket}/{input_key}'
 
-    return df
+    # Read the JSON file lazily
+    lazy_df = pl.scan_json(file_path, storage_options={'s3': fs})
+
+    # Define your data processing steps here
+    # This is just an example; you would replace this with your actual processing logic
+    processed_df = lazy_df.filter(pl.col('some_column').is_not_null())
+
+    # Materialize the lazy frame to a DataFrame
+    result_df = processed_df.collect()
+
+    # Convert the Polars DataFrame to a Parquet file in memory
+    output_buffer = result_df.write_parquet()
+
+    # Write the Parquet data to S3
+    s3_client = context.resources.s3
+    s3_client.put_object(Bucket=s3_bucket, Key=output_key, Body=output_buffer.getvalue())
 
 # @asset(
 #     ins={'kaggle_file': AssetIn}

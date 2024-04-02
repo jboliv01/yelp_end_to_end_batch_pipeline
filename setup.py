@@ -13,8 +13,7 @@ setup(
         "kaleido",
         "pandas",
         "polars",
-        "plotly",
-        "shapely",
+        "s3fs"
         "kaggle"
     ],
     extras_require={"dev": ["dagster-webserver", "pytest"]},
