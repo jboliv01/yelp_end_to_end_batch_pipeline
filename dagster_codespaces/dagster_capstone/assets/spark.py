@@ -27,32 +27,3 @@ def people(pyspark: PySparkResource, pyspark_step_launcher: ResourceParam[Any]) 
 def people_over_50(pyspark_step_launcher: ResourceParam[Any], people: DataFrame) -> DataFrame:
     return people.filter(people["age"] > 50)
 
-@asset
-def yelp_businesses(pyspark: PySparkResource, pyspark_step_launcher: ResourceParam[Any], kaggle_file: AssetIn) -> DataFrame:
-    spark = pyspark.spark_session
-    file_path = f"{kaggle_file}yelp_academic_dataset_business.json"
-    df = spark.read.json(file_path)
-
-    # Process the data and then write back to S3 or another location
-    output_path = "s3://de-capstone-project/staging/yelp_businesses/"
-    df.write.mode('overwrite').parquet(output_path)
-
-    return df
-
-# @asset(
-#     ins={'kaggle_file': AssetIn}
-# )
-# def yelp_users(pyspark_step_launcher: ResourceParam[Any]) -> DataFrame:
-#     return 1
-
-# @asset(
-#     ins={'kaggle_file': AssetIn}
-# )
-# def yelp_reviews(pyspark_step_launcher: ResourceParam[Any]) -> DataFrame:
-#     return 1
-
-# @asset(
-#     ins={'kaggle_file': AssetIn}
-# )
-# def yelp_ratings(pyspark_step_launcher: ResourceParam[Any]) -> DataFrame:
-#     return 1

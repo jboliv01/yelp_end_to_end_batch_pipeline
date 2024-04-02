@@ -12,6 +12,7 @@ setup(
         "geopandas",
         "kaleido",
         "pandas",
+        "polars",
         "plotly",
         "shapely",
         "kaggle"

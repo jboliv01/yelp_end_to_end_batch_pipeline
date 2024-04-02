@@ -41,6 +41,6 @@ defs = Definitions(
             "s3_bucket": "de-capstone-project",
             "s3_key_prefix": "yelp/raw/"
         }),
-        "io_manager": ParquetIOManager(pyspark=emr_pyspark, path_prefix="s3://de-capstone-project/production"),
+        #"io_manager": ParquetIOManager(pyspark=emr_pyspark, path_prefix="s3://de-capstone-project/production"),
     },
 )
