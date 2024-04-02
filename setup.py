@@ -13,7 +13,7 @@ setup(
         "kaleido",
         "pandas",
         "polars",
-        "s3fs"
+        "s3fs",
         "kaggle"
     ],
     extras_require={"dev": ["dagster-webserver", "pytest"]},
