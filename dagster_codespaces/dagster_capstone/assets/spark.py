@@ -16,21 +16,6 @@ from pyspark.sql.types import IntegerType, StringType, StructField, StructType
 #     def load_input(self, context):
 #         spark = self.pyspark.spark_session
 #         return spark.read.parquet(self._get_path(context.upstream_output))
-    
-# class JsonIOManager(ConfigurableIOManager):
-#     pyspark: PySparkResource
-
-#     def _get_path(self, context) -> str:
-#         return "/".join([context.resource_config["path_prefix"], *context.asset_key.path])
-
-#     def handle_output(self, context, obj):
-#         obj.write.json(self._get_path(context))
-
-#     def load_input(self, context):
-#         spark = self.pyspark.spark_session
-#         return spark.read.json(self._get_path(context.upstream_output))
-
-
 
 # @asset
 # def people(pyspark: PySparkResource, pyspark_step_launcher: ResourceParam[Any]) -> DataFrame:
@@ -43,6 +28,7 @@ from pyspark.sql.types import IntegerType, StringType, StructField, StructType
 #     return people.filter(people["age"] > 50)
 
 @asset(
+    required_resource_keys={'pyspark'},
     ins={'kaggle_file': AssetIn(dagster_type=str)}
 )
 def yelp_businesses(pyspark: PySparkResource, kaggle_file: str) -> DataFrame:
