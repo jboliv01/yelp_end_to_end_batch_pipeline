@@ -43,7 +43,8 @@ def kaggle_file_manager():
         "kaggle_dataset": Field(str, default_value='yelp-dataset/yelp-dataset'),
         "file_path": Field(str, default_value=str(Path(__file__).parents[3] / 'data' / 'raw' / 'kaggle'))
     },
-    compute_kind='python'
+    compute_kind='python',
+    group_name='yelp_assets'
 )
 def kaggle_file(context) -> str:
     dataset = context.op_config["kaggle_dataset"]
@@ -64,7 +65,7 @@ def kaggle_file(context) -> str:
 
     return file_path
 
-@asset
+@asset(group_name='yelp_assets')
 def yelp_path(context, kaggle_file: str) -> None:
     context.log.info(f'file_path: {kaggle_file}')
     for file_name in os.listdir(kaggle_file):
