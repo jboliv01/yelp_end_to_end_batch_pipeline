@@ -38,7 +38,7 @@ def kaggle_file_manager():
 
 
 @asset(
-    io_manager_key='kaggle_io_manager',
+    # io_manager_key='kaggle_io_manager',
     config_schema={
         "kaggle_dataset": Field(str, default_value='yelp-dataset/yelp-dataset'),
         "file_path": Field(str, default_value=str(Path(__file__).parents[3] / 'data' / 'raw' / 'kaggle'))
@@ -65,6 +65,9 @@ def kaggle_file(context) -> str:
     return file_path
 
 @asset
-def yelp_path(context, kaggle_file: str) -> str:
-    context.info.log(f'file_path: {kaggle_file}')
+def yelp_path(context, kaggle_file: str) -> None:
+    context.log.info(f'file_path: {kaggle_file}')
+    for file_name in os.listdir(kaggle_file):
+            file_path = os.path.join(kaggle_file, file_name)
+            context.log.info(f'file: {file_name}')
     pass
