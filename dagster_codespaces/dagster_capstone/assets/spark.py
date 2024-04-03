@@ -17,13 +17,13 @@ class ParquetIOManager(ConfigurableIOManager):
         spark = self.pyspark.spark_session
         return spark.read.parquet(self._get_path(context.upstream_output))
 
-@asset
+@asset(compute_kind='spark')
 def people(pyspark: PySparkResource, pyspark_step_launcher: ResourceParam[Any]) -> DataFrame:
     schema = StructType([StructField("name", StringType()), StructField("age", IntegerType())])
     rows = [Row(name="Thom", age=51), Row(name="Jonny", age=48), Row(name="Nigel", age=49)]
     return pyspark.spark_session.createDataFrame(rows, schema)
 
-@asset
+@asset(compute_kind='spark')
 def people_over_50(pyspark_step_launcher: ResourceParam[Any], people: DataFrame) -> DataFrame:
     return people.filter(people["age"] > 50)
 

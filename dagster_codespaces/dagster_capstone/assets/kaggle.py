@@ -42,7 +42,8 @@ def kaggle_file_manager():
     config_schema={
         "kaggle_dataset": Field(str, default_value='yelp-dataset/yelp-dataset'),
         "file_path": Field(str, default_value=str(Path(__file__).parents[3] / 'data' / 'raw' / 'kaggle'))
-    }
+    },
+    compute_kind='python'
 )
 def kaggle_file(context) -> str:
     dataset = context.op_config["kaggle_dataset"]
@@ -62,3 +63,8 @@ def kaggle_file(context) -> str:
         context.log.info("Dataset already exists. Skipping download.")
 
     return file_path
+
+@asset
+def yelp_path(context, kaggle_file: str) -> str:
+    context.info.log(f'file_path: {kaggle_file}')
+    pass

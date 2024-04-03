@@ -5,7 +5,6 @@ from dagster import Definitions, load_assets_from_modules
 from dagster_aws.emr import emr_pyspark_step_launcher
 from dagster_aws.s3 import S3Resource
 from dagster_pyspark import PySparkResource
-from dagster_polars import PolarsParquetIOManager
 
 from .assets import kaggle, spark, yelp
 from .assets.spark import ParquetIOManager
@@ -38,8 +37,11 @@ defs = Definitions(
             }
         ),
         "pyspark": emr_pyspark,
-        "s3": S3Resource(),
-        "polars_parquet_io_manager": PolarsParquetIOManager(base_dir="s3://de-capstone-project/production"),
+        "s3": S3Resource(region_name='us-east-2'),
+        "json_to_parquet_s3_io_manager": yelp.json_to_parquet_s3_io_manager.configured({
+            "s3_bucket": "de-capstone-project",
+            "s3_prefix": "yelp/raw/"
+        }),
         "kaggle_io_manager": kaggle.kaggle_file_manager.configured({
             "s3_bucket": "de-capstone-project",
             "s3_key_prefix": "yelp/raw/"
