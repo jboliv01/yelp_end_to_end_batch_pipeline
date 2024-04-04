@@ -1,33 +1,33 @@
-import io
-from dagster import asset, IOManager, io_manager, Field
+
+from dagster import asset, multi_asset, AssetOut, Output, Field
 import polars as pl
 
 
-@asset(config_schema={'file_key': Field(str)},
+@multi_asset(
+       outs={"yelp_user_data": AssetOut(), "yelp_business_data": AssetOut()},
+       config_schema={'file_keys': Field(dict)},
        required_resource_keys={"s3"},
        group_name='yelp_assets',
-       compute_kind='polars')
+       compute_kind='polars'
+)
 def yelp_data(context) -> pl.DataFrame:
     s3 = context.resources.s3
-    file_key = context.op_config['file_key']
     s3_bucket = 'de-capstone-project'
     s3_prefix = 'yelp/raw'
+    file_keys = context.op_config['file_keys']
 
-    s3_path = f"{s3_prefix}/{file_key}"
-    context.log.info(f's3 path: {s3_path}')
-    # Download the file from S3
-    obj = s3.get_object(Bucket=s3_bucket, Key=s3_path)
+    assets = {}
+    for asset_name, file_key in file_keys.items():
+        s3_path = f"{s3_prefix}/{file_key}"
+        context.log.info(f's3 path: {s3_path}')
+        obj = s3.get_object(Bucket=s3_bucket, Key=s3_path)
+        content = obj['Body'].read()
+        lazy_df = pl.read_ndjson(content).lazy()
+        assets[asset_name] = lazy_df
 
-    # Read the content as a string
-    content = obj['Body'].read()
+    for asset_name, df in assets.items():
+        yield Output(df, asset_name)
 
-    lazy_df = pl.read_ndjson(content).lazy() 
-
-    return lazy_df
-
-
-yelp_user_data = yelp_data.configured({"file_key": "yelp_academic_dataset_user.json"}, name='yelp_user_data')
-yelp_business_data = yelp_data.configured({"file_key": "yelp_academic_dataset_business.json"}, name='yelp_business_data')
 
 @asset(group_name='yelp_assets')
 def yelp_users(yelp_user_data):
