@@ -67,7 +67,7 @@ def yelp_data(context):
             context.log.info(f'loading dataframe lazily')
             lazy_df = pl.scan_ndjson(f)
 
-        yield Output(lazy_df.collect(), asset_name)
+        yield Output(lazy_df, asset_name)
 
 
 
