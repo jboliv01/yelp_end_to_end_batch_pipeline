@@ -53,9 +53,9 @@ def yelp_reviews(yelp_review_data) -> pl.DataFrame:
 
 @asset(group_name='yelp_assets',
        compute_kind='polars')
-def yelp_tips(yelp_tips_data) -> pl.DataFrame:
+def yelp_tips(yelp_tip_data) -> pl.DataFrame:
     '''returns a subset of yelp business data'''
-    return yelp_tips_data.head(10).collect()
+    return yelp_tip_data.head(10).collect()
 
 # @asset(config_schema={'file_key': Field(str)},
 #        required_resource_keys={"s3"},
