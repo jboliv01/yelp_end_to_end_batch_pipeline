@@ -3,56 +3,44 @@ from dagster import asset, IOManager, io_manager, Field
 import polars as pl
 
 
-class JsonToParquetS3IOManager(IOManager):
-    def __init__(self, s3_resource, s3_bucket, s3_prefix):
-        self.s3 = s3_resource
-        self.s3_bucket = s3_bucket
-        self.s3_prefix = s3_prefix
-
-    def handle_output(self, context, obj: pl.DataFrame):
-        buffer = io.BytesIO()
-        pl.write_parquet(obj, buffer)
-        buffer.seek(0)
-        s3_path = f"{self.s3_prefix}/{context.asset_key.path[-1]}.parquet"
-        self.s3.put_object(Bucket=self.s3_bucket, Key=s3_path, Body=buffer.getvalue())
-
-    def load_input(self, context):
-        context.log.info(f'op_config: {dir(context.op_config)}')
-        context.log.info(f'keys: {context.op_config.keys}')
-        file_key = context.resource_config['file_key']
-        s3_path = f"{self.s3_prefix}/{file_key}"
-        obj = self.s3.get_object(Bucket=self.s3_bucket, Key=s3_path)
-        buffer = io.BytesIO(obj['Body'].read())
-        df = pl.read_json(buffer)
-        return df
-
-@io_manager(config_schema={
-    "s3_bucket": str,
-    "s3_prefix": str
-    },
-    required_resource_keys={"s3"})
-def json_to_parquet_s3_io_manager(context):
+@asset(config_schema={'file_key': Field(str)},
+       required_resource_keys={"s3"},
+       group_name='yelp_assets',
+       compute_kind='polars')
+def yelp_data(context) -> pl.DataFrame:
     s3 = context.resources.s3
-    s3_bucket = context.resource_config["s3_bucket"]
-    s3_prefix = context.resource_config["s3_prefix"]
-    return JsonToParquetS3IOManager(s3_resource=s3, s3_bucket=s3_bucket, s3_prefix=s3_prefix)
+    file_key = context.op_config['file_key']
+    s3_bucket = 'de-capstone-project'
+    s3_prefix = 'yelp/raw'
 
-# Asset for processing the data
-@asset(
-    config_schema={'file_key': Field(str)},
-    io_manager_key='json_to_parquet_s3_io_manager'
-)
-def yelp_users(context) -> pl.DataFrame:
-    context.log.info(f'context: {dir(context)}')
-    df = context.resources.json_to_parquet_s3_io_manager.load_input(context)
-    # Process the data
-    return df.head(1000)
+    s3_path = f"{s3_prefix}/{file_key}"
+    context.log.info(f's3 path: {s3_path}')
+    # Download the file from S3
+    obj = s3.get_object(Bucket=s3_bucket, Key=s3_path)
 
+    # Read the content as a string
+    content = obj['Body'].read()
+
+    lazy_df = pl.read_ndjson(content).lazy() 
+
+    return lazy_df
+
+
+yelp_user_data = yelp_data.configured({"file_key": "yelp_academic_dataset_user.json"})
+yelp_business_data = yelp_data.configured({"file_key": "yelp_academic_dataset_business.json"})
+
+@asset(group_name='yelp_assets')
+def yelp_users(yelp_user_data):
+    return yelp_user_data.head(10).collect()
+
+@asset(group_name='yelp_assets')
+def yelp_businesses(yelp_business_data):
+    return yelp_business_data.head(10).collect()
 
 @asset(config_schema={'file_key': Field(str)},
        required_resource_keys={"s3"},
        group_name='yelp_assets')
-def yelp_users_test(context) -> pl.DataFrame:
+def yelp_businesses_old(context) -> pl.DataFrame:
     s3 = context.resources.s3
     file_key = context.op_config['file_key']
     s3_bucket = 'de-capstone-project'
@@ -70,81 +58,40 @@ def yelp_users_test(context) -> pl.DataFrame:
 
     return lazy_df.head(10).collect()
 
-# @asset(
-#     config_schema={'file_key': Field(str)},
-#     io_manager_key='json_to_parquet_s3_io_manager',
-#     required_resource_keys={"s3"},
-#     compute_kind='polars'
-#     )
-# def yelp_businesses(raw_data: pl.DataFrame) -> pl.DataFrame:
-#     processed_data = raw_data.head(1000)
-#     return processed_data
 
 
-# @asset(
-#     required_resource_keys={"s3"},
-#     deps=['kaggle_file'],
-#     compute_kind='polars'
-# )
-# def yelp_users(context) -> pl.DataFrame:
-#     s3_bucket = 'de-capstone-project'
-#     file_key = 'yelp/raw/yelp_academic_dataset_user.json'
 
-#     # Use the S3 client from S3Resource to get the file object
+
+# class JsonToParquetS3IOManager(IOManager):
+#     def __init__(self, s3_resource, s3_bucket, s3_prefix):
+#         self.s3 = s3_resource
+#         self.s3_bucket = s3_bucket
+#         self.s3_prefix = s3_prefix
+
+#     def handle_output(self, context, obj: pl.DataFrame):
+#         buffer = io.BytesIO()
+#         pl.write_parquet(obj, buffer)
+#         buffer.seek(0)
+#         s3_path = f"{self.s3_prefix}/{context.asset_key.path[-1]}.parquet"
+#         self.s3.put_object(Bucket=self.s3_bucket, Key=s3_path, Body=buffer.getvalue())
+
+#     def load_input(self, context):
+#         context.log.info(f'op_config: {dir(context.op_config)}')
+#         context.log.info(f'keys: {context.op_config.keys}')
+#         file_key = context.resource_config['file_key']
+#         s3_path = f"{self.s3_prefix}/{file_key}"
+#         obj = self.s3.get_object(Bucket=self.s3_bucket, Key=s3_path)
+#         buffer = io.BytesIO(obj['Body'].read())
+#         df = pl.read_json(buffer)
+#         return df
+
+# @io_manager(config_schema={
+#     "s3_bucket": str,
+#     "s3_prefix": str
+#     },
+#     required_resource_keys={"s3"})
+# def json_to_parquet_s3_io_manager(context):
 #     s3 = context.resources.s3
-#     s3_obj = s3.get_object(Bucket=s3_bucket, Key=file_key)
-#     context.log.info(f'S3 Object: {s3_obj}')
-
-#     body = s3_obj['Body'].read()
-
-#     with io.BytesIO(body) as f:
-#         df = pl.read_ndjson(f)
-
-#     # Return the first 1000 rows
-#     return df.head(1000)
-
-# @asset(
-#     required_resource_keys={"s3"},
-#     deps=['kaggle_file'],
-#     compute_kind='polars'
-# )
-# def yelp_reviews(context) -> pl.DataFrame:
-#     s3_bucket = 'de-capstone-project'
-#     file_key = 'yelp/raw/yelp_academic_dataset_review.json'
-
-#     # Use the S3 client from S3Resource to get the file object
-#     s3 = context.resources.s3
-#     s3_obj = s3.get_object(Bucket=s3_bucket, Key=file_key)
-#     context.log.info(f'S3 Object: {s3_obj}')
-
-#     body = s3_obj['Body'].read()
-
-#     with io.BytesIO(body) as f:
-#         df = pl.read_ndjson(f)
-
-#     # Return the first 1000 rows
-#     return df.head(1000)
-
-# @asset(
-#     required_resource_keys={"s3"},
-#     deps=['kaggle_file'],
-#     compute_kind='polars'
-# )
-# def yelp_tips(context) -> pl.DataFrame:
-#     s3_bucket = 'de-capstone-project'
-#     file_key = 'yelp/raw/yelp_academic_dataset_tip.json'
-
-#     # Use the S3 client from S3Resource to get the file object
-#     s3 = context.resources.s3
-#     s3_obj = s3.get_object(Bucket=s3_bucket, Key=file_key)
-#     context.log.info(f'S3 Object: {s3_obj}')
-
-#     body = s3_obj['Body'].read()
-
-#     with io.BytesIO(body) as f:
-#         df = pl.read_ndjson(f)
-
-#     # Return the first 1000 rows
-#     return df.head(1000)
-
-
+#     s3_bucket = context.resource_config["s3_bucket"]
+#     s3_prefix = context.resource_config["s3_prefix"]
+#     return JsonToParquetS3IOManager(s3_resource=s3, s3_bucket=s3_bucket, s3_prefix=s3_prefix)
