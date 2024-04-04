@@ -1,5 +1,6 @@
 *tmph1o7vqkp
 *.csv
+*polars.py
 *.parquet
 *.json
 *.geojson

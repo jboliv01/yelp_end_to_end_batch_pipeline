@@ -71,7 +71,7 @@ def yelp_users_test(context) -> pl.DataFrame:
     
     # Use StringIO to provide a file-like object to Polars
     with io.StringIO(content) as f:
-        lazy_df = pl.read_ndjson(f)
+        lazy_df = pl.scan_ndjson(f)
 
     return lazy_df.head(1000).collect()
 
