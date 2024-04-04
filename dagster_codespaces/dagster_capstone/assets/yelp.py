@@ -1,4 +1,3 @@
-
 from dagster import asset, multi_asset, AssetOut, Output, Field
 import polars as pl
 
@@ -57,10 +56,6 @@ def yelp_businesses_old(context) -> pl.DataFrame:
     lazy_df = pl.read_ndjson(content).lazy() 
 
     return lazy_df.head(10).collect()
-
-
-
-
 
 # class JsonToParquetS3IOManager(IOManager):
 #     def __init__(self, s3_resource, s3_bucket, s3_prefix):
