@@ -7,8 +7,7 @@ import polars as pl
        config_schema={'file_keys': Field(dict)},
        required_resource_keys={"s3"},
        group_name='yelp_assets',
-       compute_kind='polars'
-)
+       compute_kind='polars')
 def yelp_data(context) -> pl.DataFrame:
     s3 = context.resources.s3
     s3_bucket = 'de-capstone-project'
