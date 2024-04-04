@@ -39,10 +39,6 @@ defs = Definitions(
         ),
         "pyspark": emr_pyspark,
         "s3": S3Resource(region_name='us-east-2'),
-        "json_to_parquet_s3_io_manager": yelp.json_to_parquet_s3_io_manager.configured({
-            "s3_bucket": "de-capstone-project",
-            "s3_prefix": "yelp/raw/"
-        }),
         "kaggle_io_manager": kaggle.kaggle_file_manager.configured({
             "s3_bucket": "de-capstone-project",
             "s3_key_prefix": "yelp/raw/"
