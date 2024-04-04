@@ -4,7 +4,7 @@ import polars as pl
 
 @multi_asset(
        outs={"yelp_user_data": AssetOut(), "yelp_business_data": AssetOut()},
-       config_schema={'file_keys': Field(dict)},
+       config_schema={'file_keys': Field(dict, is_required=True)},
        required_resource_keys={"s3"},
        group_name='yelp_assets',
        compute_kind='polars')
@@ -35,26 +35,26 @@ def yelp_users(yelp_user_data):
 def yelp_businesses(yelp_business_data):
     return yelp_business_data.head(10).collect()
 
-@asset(config_schema={'file_key': Field(str)},
-       required_resource_keys={"s3"},
-       group_name='yelp_assets')
-def yelp_businesses_old(context) -> pl.DataFrame:
-    s3 = context.resources.s3
-    file_key = context.op_config['file_key']
-    s3_bucket = 'de-capstone-project'
-    s3_prefix = 'yelp/raw'
+# @asset(config_schema={'file_key': Field(str)},
+#        required_resource_keys={"s3"},
+#        group_name='yelp_assets')
+# def yelp_businesses_old(context) -> pl.DataFrame:
+#     s3 = context.resources.s3
+#     file_key = context.op_config['file_key']
+#     s3_bucket = 'de-capstone-project'
+#     s3_prefix = 'yelp/raw'
 
-    s3_path = f"{s3_prefix}/{file_key}"
-    context.log.info(f's3 path: {s3_path}')
-    # Download the file from S3
-    obj = s3.get_object(Bucket=s3_bucket, Key=s3_path)
+#     s3_path = f"{s3_prefix}/{file_key}"
+#     context.log.info(f's3 path: {s3_path}')
+#     # Download the file from S3
+#     obj = s3.get_object(Bucket=s3_bucket, Key=s3_path)
 
-    # Read the content as a string
-    content = obj['Body'].read()
+#     # Read the content as a string
+#     content = obj['Body'].read()
 
-    lazy_df = pl.read_ndjson(content).lazy() 
+#     lazy_df = pl.read_ndjson(content).lazy() 
 
-    return lazy_df.head(10).collect()
+#     return lazy_df.head(10).collect()
 
 # class JsonToParquetS3IOManager(IOManager):
 #     def __init__(self, s3_resource, s3_bucket, s3_prefix):

@@ -65,10 +65,10 @@ def kaggle_file(context) -> str:
 
     return file_path
 
-@asset(group_name='yelp_assets')
-def yelp_path(context, kaggle_file: str) -> None:
-    context.log.info(f'file_path: {kaggle_file}')
-    for file_name in os.listdir(kaggle_file):
-            file_path = os.path.join(kaggle_file, file_name)
-            context.log.info(f'file: {file_name}')
-    pass
+# @asset(group_name='yelp_assets')
+# def yelp_path(context, kaggle_file: str) -> None:
+#     context.log.info(f'file_path: {kaggle_file}')
+#     for file_name in os.listdir(kaggle_file):
+#             file_path = os.path.join(kaggle_file, file_name)
+#             context.log.info(f'file: {file_name}')
+#     pass
