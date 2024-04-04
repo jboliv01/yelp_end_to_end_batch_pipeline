@@ -26,8 +26,8 @@ def yelp_data(context) -> pl.DataFrame:
     return lazy_df
 
 
-yelp_user_data = yelp_data.configured({"file_key": "yelp_academic_dataset_user.json"})
-yelp_business_data = yelp_data.configured({"file_key": "yelp_academic_dataset_business.json"})
+yelp_user_data = yelp_data.configured({"file_key": "yelp_academic_dataset_user.json"}, name='yelp_user_data')
+yelp_business_data = yelp_data.configured({"file_key": "yelp_academic_dataset_business.json"}, name='yelp_business_data')
 
 @asset(group_name='yelp_assets')
 def yelp_users(yelp_user_data):
