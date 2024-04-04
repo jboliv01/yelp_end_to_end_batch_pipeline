@@ -62,18 +62,13 @@ def yelp_users_test(context) -> pl.DataFrame:
     context.log.info(f's3 path: {s3_path}')
     # Download the file from S3
     obj = s3.get_object(Bucket=s3_bucket, Key=s3_path)
-    bytes_to_read = 1024  # for example, read the first 1024 bytes
-    head = obj['Body'].read(bytes_to_read)
-    context.log.info(f'head: {head}')
 
     # Read the content as a string
-    content = obj['Body'].read().decode('utf-8')
-    
-    # Use StringIO to provide a file-like object to Polars
-    with io.StringIO(content) as f:
-        lazy_df = pl.scan_ndjson(f)
+    content = obj['Body'].read()
 
-    return lazy_df.head(1000).collect()
+    lazy_df = pl.read_ndjson(content).lazy() 
+
+    return lazy_df.head(10).collect()
 
 # @asset(
 #     config_schema={'file_key': Field(str)},
