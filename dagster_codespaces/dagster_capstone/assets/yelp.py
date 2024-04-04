@@ -31,38 +31,44 @@ import s3fs
 #     return 'complete'
 
 
+from dagster import multi_asset, Output, Field
+import polars as pl
+import s3fs
+
 @multi_asset(
-       outs={"yelp_user_data": AssetOut(is_required=False), 
-             "yelp_business_data": AssetOut(is_required=False),
-             "yelp_review_data": AssetOut(is_required=False),
-             "yelp_tip_data": AssetOut(is_required=False)
-             },
-       can_subset=True,
-       config_schema={'file_keys': Field(dict, is_required=True)},
-       required_resource_keys={"s3"},
-       deps=['kaggle_file'],
-       group_name='yelp_assets',
-       compute_kind='python')
-def yelp_data(context) -> pl.DataFrame:
+    outs={
+        "yelp_user_data": AssetOut(is_required=False), 
+        "yelp_business_data": AssetOut(is_required=False),
+        "yelp_review_data": AssetOut(is_required=False),
+        "yelp_tip_data": AssetOut(is_required=False)
+    },
+    can_subset=True,
+    config_schema={'file_keys': Field(dict, is_required=True)},
+    required_resource_keys={"s3"},
+    deps=['kaggle_file'],
+    group_name='yelp_assets',
+    compute_kind='python'
+)
+def yelp_data(context):
     '''load each yelp json dataset into a polars dataframe'''
-    s3 = context.resources.s3
     s3_bucket = 'de-capstone-project'
     s3_prefix = 'yelp/raw'
     file_keys = context.op_config['file_keys']
 
-    assets = {}
-    for asset_name, file_key in file_keys.items():
-        s3_path = f"{s3_prefix}/{file_key}"
-        context.log.info(f's3 path: {s3_path}')
-        obj = s3.get_object(Bucket=s3_bucket, Key=s3_path)
-        context.log.info(f'reading JSON body')
-        content = obj['Body'].read()
-        context.log.info(f'loading dataframe')
-        lazy_df = pl.read_ndjson(content)
-        assets[asset_name] = lazy_df
+    fs = s3fs.S3FileSystem()
 
-    for asset_name, df in assets.items():
-        yield Output(df, asset_name)
+    for asset_name, file_key in file_keys.items():
+        s3_path = f"s3://{s3_bucket}/{s3_prefix}/{file_key}"
+        context.log.info(f's3 path: {s3_path}')
+
+        # Using s3fs to stream data directly into Polars
+        context.log.info(f'reading JSON body')
+        with fs.open(s3_path, mode='rb') as f:
+            context.log.info(f'loading dataframe lazily')
+            lazy_df = pl.scan_ndjson(f)
+
+        yield Output(lazy_df.collect(), asset_name)
+
 
 
 # @asset(group_name='yelp_assets',
