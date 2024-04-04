@@ -32,11 +32,12 @@ import s3fs
 
 
 @multi_asset(
-       outs={"yelp_user_data": AssetOut(), 
-             "yelp_business_data": AssetOut(),
-             "yelp_review_data": AssetOut(),
-             "yelp_tip_data": AssetOut()
+       outs={"yelp_user_data": AssetOut(is_required=False), 
+             "yelp_business_data": AssetOut(is_required=False),
+             "yelp_review_data": AssetOut(is_required=False),
+             "yelp_tip_data": AssetOut(is_required=False)
              },
+       can_subset=True,
        config_schema={'file_keys': Field(dict, is_required=True)},
        required_resource_keys={"s3"},
        deps=['kaggle_file'],
