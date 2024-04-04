@@ -6,12 +6,23 @@
 - ['create-default-roles for EMR Cluster'](https://docs.aws.amazon.com/cli/latest/reference/emr/create-default-roles.html#create-default-roles)
 - ['AWS S3 multipart upload documentation'](https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html#sdksupportformpu)
 
+
+
+
 ## Getting started
 
 Let's start by creating a virtual python environment. 
 
 ```bash
 py -m venv dagster_venv
+```
+
+```bash
+cd dagster_codespaces
+
+..\dagster_venv\Scripts\Activate
+
+dagster dev
 ```
 
 First, install your Dagster code location as a Python package by running the command below in your terminal. By using the --editable (`-e`) flag, pip will install your Python package in ["editable mode"](https://pip.pypa.io/en/latest/topics/local-project-installs/#editable-installs) so that as you develop, local code changes will automatically apply.
