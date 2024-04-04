@@ -6,9 +6,11 @@ import polars as pl
        outs={"yelp_user_data": AssetOut(), "yelp_business_data": AssetOut()},
        config_schema={'file_keys': Field(dict, is_required=True)},
        required_resource_keys={"s3"},
+       deps=['kaggle_file'],
        group_name='yelp_assets',
-       compute_kind='polars')
+       compute_kind='python')
 def yelp_data(context) -> pl.DataFrame:
+    '''load each yelp json dataset into a polars dataframe'''
     s3 = context.resources.s3
     s3_bucket = 'de-capstone-project'
     s3_prefix = 'yelp/raw'
@@ -27,12 +29,16 @@ def yelp_data(context) -> pl.DataFrame:
         yield Output(df, asset_name)
 
 
-@asset(group_name='yelp_assets')
-def yelp_users(yelp_user_data):
+@asset(group_name='yelp_assets',
+       compute_kind='polars')
+def yelp_users(yelp_user_data) -> pl.DataFrame:
+    '''returns a subset of yelp user data'''
     return yelp_user_data.head(10).collect()
 
-@asset(group_name='yelp_assets')
-def yelp_businesses(yelp_business_data):
+@asset(group_name='yelp_assets',
+       compute_kind='polars')
+def yelp_businesses(yelp_business_data) -> pl.DataFrame:
+    '''returns a subset of yelp business data'''
     return yelp_business_data.head(10).collect()
 
 # @asset(config_schema={'file_key': Field(str)},
