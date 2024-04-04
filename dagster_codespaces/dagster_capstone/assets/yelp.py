@@ -3,7 +3,11 @@ import polars as pl
 
 
 @multi_asset(
-       outs={"yelp_user_data": AssetOut(), "yelp_business_data": AssetOut()},
+       outs={"yelp_user_data": AssetOut(), 
+             "yelp_business_data": AssetOut(),
+             "yelp_review_data": AssetOut(),
+             "yelp_tip_data": AssetOut()
+             },
        config_schema={'file_keys': Field(dict, is_required=True)},
        required_resource_keys={"s3"},
        deps=['kaggle_file'],
@@ -40,6 +44,18 @@ def yelp_users(yelp_user_data) -> pl.DataFrame:
 def yelp_businesses(yelp_business_data) -> pl.DataFrame:
     '''returns a subset of yelp business data'''
     return yelp_business_data.head(10).collect()
+
+@asset(group_name='yelp_assets',
+       compute_kind='polars')
+def yelp_reviews(yelp_review_data) -> pl.DataFrame:
+    '''returns a subset of yelp business data'''
+    return yelp_review_data.head(10).collect()
+
+@asset(group_name='yelp_assets',
+       compute_kind='polars')
+def yelp_tips(yelp_tips_data) -> pl.DataFrame:
+    '''returns a subset of yelp business data'''
+    return yelp_tips_data.head(10).collect()
 
 # @asset(config_schema={'file_key': Field(str)},
 #        required_resource_keys={"s3"},
