@@ -50,7 +50,8 @@ def yelp_users(context) -> pl.DataFrame:
 
 
 @asset(config_schema={'file_key': Field(str)},
-       required_resource_keys={"s3"})
+       required_resource_keys={"s3"},
+       group_name='yelp_assets')
 def yelp_users_test(context) -> pl.DataFrame:
     s3 = context.resources.s3
     file_key = context.op_config['file_key']
