@@ -66,12 +66,12 @@ def yelp_data(context):
         context.log.info(f'reading JSON body')
 
         context.log.info(f'loading dataframe lazily')
-        lazy_df = pl.scan_ndjson(s3_path, storage_options={'s3': s3})
+        # lazy_df = pl.scan_ndjson(s3_path, storage_options={'s3': s3})
 
-        # with fs.open(s3_path, mode='rb') as f:
-        #     context.log.info(f's3 object type: {type(f)}')
-        #     context.log.info(f'loading dataframe lazily')
-        #     lazy_df = pl.scan_ndjson(f)
+        with fs.open(s3_path, mode='rb') as f:
+            context.log.info(f's3 object type: {type(f)}')
+            context.log.info(f'loading dataframe lazily')
+            lazy_df = pl.scan_ndjson(f)
 
         context.log.info(f'yielding output: {asset_name}')
         yield Output(lazy_df, asset_name)
