@@ -58,7 +58,7 @@ def yelp_data(context) -> pl.DataFrame:
 
     for asset_name, file_key in file_keys.items():
         s3_path = f"{s3_prefix}/{file_key}"
-        context.c(f's3 path: {s3_path}')
+        context.log.info(f's3 path: {s3_path}')
         obj = s3.get_object(Bucket=s3_bucket, Key=s3_path)
         context.log.info('reading json body')
         content = obj['Body'].read()
