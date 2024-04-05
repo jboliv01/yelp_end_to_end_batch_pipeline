@@ -45,36 +45,25 @@ import s3fs
     can_subset=True,
     config_schema={'file_keys': Field(dict, is_required=True)},
     required_resource_keys={"s3"},
-    deps=['kaggle_file'],
+    # deps=['kaggle_file'],
     group_name='yelp_assets',
     compute_kind='python'
 )
-def yelp_data(context):
+def yelp_data(context) -> pl.DataFrame:
     '''load each yelp json dataset into a polars dataframe'''
+    s3 = context.resources.s3
     s3_bucket = 'de-capstone-project'
     s3_prefix = 'yelp/raw'
     file_keys = context.op_config['file_keys']
 
-    fs = s3fs.S3FileSystem()
-    s3 = context.resources.s3
-
     for asset_name, file_key in file_keys.items():
-        s3_path = f"s3://{s3_bucket}/{s3_prefix}/{file_key}"
+        s3_path = f"{s3_prefix}/{file_key}"
         context.log.info(f's3 path: {s3_path}')
+        obj = s3.get_object(Bucket=s3_bucket, Key=s3_path)
+        content = obj['Body'].read()
+        lazy_df = pl.read_ndjson(content).lazy()
 
-        # Using s3fs to stream data directly into Polars
-        context.log.info(f'reading JSON body')
-        
-        context.log.info(f'loading dataframe lazily')
-
-        with fs.open(s3_path, mode ='rb') as f:
-            context.log.info(f's3 object type: {type(f)}')
-            context.log.info(f'loading dataframe lazily')
-            lazy_df = pl.scan_ndjson(f)
-
-        context.log.info(f'yielding output: {asset_name}')
         yield Output(lazy_df, asset_name)
-
 
 
 # @asset(group_name='yelp_assets',
