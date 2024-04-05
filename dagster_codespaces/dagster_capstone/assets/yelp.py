@@ -64,7 +64,8 @@ def yelp_data(context):
         # Using s3fs to stream data directly into Polars
         context.log.info(f'reading JSON body')
 
-        lazy_df = pl.scan_ndjson(f)
+        context.log.info(f'loading dataframe lazily')
+        lazy_df = pl.scan_ndjson(s3_path)
 
         # with fs.open(s3_path, mode='rb') as f:
         #     context.log.info(f's3 object type: {type(f)}')
