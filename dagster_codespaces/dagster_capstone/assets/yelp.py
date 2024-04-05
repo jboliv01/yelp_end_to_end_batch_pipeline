@@ -28,12 +28,12 @@ import s3fs
 #     with fs.open(f's3://{s3_path}', mode='wb') as f:
 #         df.write_parquet(f)
 
-#     return 'complete'
+#     return 'complete
 
-
-from dagster import multi_asset, Output, Field
+from dagster import asset, multi_asset, AssetOut, Output, Field
 import polars as pl
 import s3fs
+
 
 @multi_asset(
     outs={
@@ -59,7 +59,7 @@ def yelp_data(context):
     s3 = context.resources.s3
 
     for asset_name, file_key in file_keys.items():
-        s3_path = f"s3://{s3_bucket}/{s3_prefix}/{file_key}"
+        s3_path = f"s3://{s3_bucket}/{s3_prefix}/{file_key}".decode('utf-8')
         context.log.info(f's3 path: {s3_path}')
 
         # Using s3fs to stream data directly into Polars
