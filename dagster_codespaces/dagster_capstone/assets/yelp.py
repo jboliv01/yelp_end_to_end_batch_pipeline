@@ -58,15 +58,15 @@ def yelp_data(context) -> pl.DataFrame:
 
     for asset_name, file_key in file_keys.items():
         s3_path = f"{s3_prefix}/{file_key}"
-        context.log.info(f's3 path: {s3_path}')
+        context.c(f's3 path: {s3_path}')
         obj = s3.get_object(Bucket=s3_bucket, Key=s3_path)
-        context.info.log('reading json body')
+        context.log.info('reading json body')
         content = obj['Body'].read()
-        context.info.log('loading lazy frame')
+        context.log.info('loading lazy frame')
         lazy_df = pl.read_ndjson(content).lazy()
-        context.info.log('deleting object and content')
+        context.log.info('deleting object and content')
         del obj, content
-        context.info.log('yielding output')
+        context.log.info('yielding output')
         yield Output(lazy_df, asset_name)
 
 
