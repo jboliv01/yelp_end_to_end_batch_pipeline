@@ -27,3 +27,13 @@ def people(pyspark: PySparkResource, pyspark_step_launcher: ResourceParam[Any]) 
 def people_over_50(pyspark_step_launcher: ResourceParam[Any], people: DataFrame) -> DataFrame:
     return people.filter(people["age"] > 50)
 
+@asset(
+        required_resource_keys={"pyspark_submit_launcher"},
+        compute_kind='spark',
+        group='yelp_assets'
+        )
+def yelp_reviews_spark(context):
+    step_launcher = context.resources.pyspark_submit_launcher
+    step_launcher.run_pyspark_job()
+
+    return 'spark job submitted to emr cluster'

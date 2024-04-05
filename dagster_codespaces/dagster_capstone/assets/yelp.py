@@ -39,7 +39,6 @@ import s3fs
     outs={
         "yelp_user_data": AssetOut(is_required=False), 
         "yelp_business_data": AssetOut(is_required=False),
-        "yelp_review_data": AssetOut(is_required=False),
         "yelp_tip_data": AssetOut(is_required=False)
     },
     can_subset=True,
@@ -70,43 +69,43 @@ def yelp_data(context) -> pl.DataFrame:
         yield Output(lazy_df, asset_name)
 
 
-# @asset(group_name='yelp_assets',
-#        compute_kind='polars')
-# def yelp_users(yelp_user_data) -> pl.DataFrame:
-#     '''returns a subset of yelp user data'''
-#     return yelp_user_data.head(10).collect()
-
-# @asset(group_name='yelp_assets',
-#        required_resource_keys={"s3"},
-#        compute_kind='polars')
-# def yelp_businesses(yelp_business_data) -> pl.DataFrame:
-#     '''returns a subset of yelp business data'''
-#     return 1
+@asset(group_name='yelp_assets',
+       compute_kind='polars')
+def yelp_users(yelp_user_data) -> pl.DataFrame:
+    '''returns a subset of yelp user data'''
+    return yelp_user_data.head(10).collect()
 
 @asset(group_name='yelp_assets',
        required_resource_keys={"s3"},
        compute_kind='polars')
-def yelp_reviews(context, yelp_review_data: pl.DataFrame):
+def yelp_businesses(yelp_business_data) -> pl.DataFrame:
     '''returns a subset of yelp business data'''
-    df = yelp_review_data
-    df = df.with_columns(pl.col('date').str.strptime(pl.Datetime).alias('datetime')).drop('date')
-    df = df.with_columns([
-        pl.col('datetime').dt.date().alias('date'),
-        pl.col('datetime').dt.year().alias('year'),
-        pl.col('datetime').dt.month().alias('month')
-        ])
+    return yelp_business_data.head(10).collect()
+
+# @asset(group_name='yelp_assets',
+#        required_resource_keys={"s3"},
+#        compute_kind='polars')
+# def yelp_reviews(context, yelp_review_data: pl.DataFrame):
+#     '''returns a subset of yelp business data'''
+#     df = yelp_review_data
+#     df = df.with_columns(pl.col('date').str.strptime(pl.Datetime).alias('datetime')).drop('date')
+#     df = df.with_columns([
+#         pl.col('datetime').dt.date().alias('date'),
+#         pl.col('datetime').dt.year().alias('year'),
+#         pl.col('datetime').dt.month().alias('month')
+#         ])
  
-    fs = s3fs.S3FileSystem()
-    s3_bucket = 'de-capstone-project'
-    s3_prefix = 'yelp/processed/reviews'
-    s3_path = f"{s3_bucket}/{s3_prefix}"
-    context.log.info(f's3 Export Path {s3_path}')
+#     fs = s3fs.S3FileSystem()
+#     s3_bucket = 'de-capstone-project'
+#     s3_prefix = 'yelp/processed/reviews'
+#     s3_path = f"{s3_bucket}/{s3_prefix}"
+#     context.log.info(f's3 Export Path {s3_path}')
 
-    # Use s3fs to open a file in write mode and write the dataframe to it
-    with fs.open(f's3://{s3_path}', mode='wb') as f:
-        df.collect().write_parquet(s3_path, use_pyarrow=True, pyarrow_options={"partition_cols": ["year","month"]})
+#     # Use s3fs to open a file in write mode and write the dataframe to it
+#     with fs.open(f's3://{s3_path}', mode='wb') as f:
+#         df.collect().write_parquet(s3_path, use_pyarrow=True, pyarrow_options={"partition_cols": ["year","month"]})
 
-    return 'complete'
+#     return 'complete'
 
 # @asset(group_name='yelp_assets',
 #        compute_kind='polars')
