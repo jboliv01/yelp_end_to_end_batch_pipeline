@@ -56,6 +56,7 @@ def yelp_data(context):
     file_keys = context.op_config['file_keys']
 
     fs = s3fs.S3FileSystem()
+    s3 = context.resources.s3
 
     for asset_name, file_key in file_keys.items():
         s3_path = f"s3://{s3_bucket}/{s3_prefix}/{file_key}"
@@ -65,7 +66,7 @@ def yelp_data(context):
         context.log.info(f'reading JSON body')
 
         context.log.info(f'loading dataframe lazily')
-        lazy_df = pl.scan_ndjson(s3_path)
+        lazy_df = pl.scan_ndjson(s3_path, storage_options={'s3': s3})
 
         # with fs.open(s3_path, mode='rb') as f:
         #     context.log.info(f's3 object type: {type(f)}')
