@@ -40,9 +40,9 @@ defs = Definitions(
         "pyspark_submit_launcher": emr_pyspark_step_launcher.configured(
             {
                 "cluster_id": {"env": "EMR_CLUSTER_ID"},
+                "s3_job_package_path": 's3://de-capstone-project/emr-resources/spark-code/',
                 "local_job_package_path": str(Path(__file__).parent.parent),
                 "deploy_local_job_package": False,
-                "s3_job_package_path": 's3://de-capstone-project/emr-resources/spark-code/emr_spark_yelp_reviews.zip',
                 "region_name": "us-west-2",
                 "staging_bucket": "de-capstone-project",
                 "staging_prefix": "staging",
