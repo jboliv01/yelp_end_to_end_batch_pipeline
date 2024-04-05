@@ -30,7 +30,7 @@ def people_over_50(pyspark_step_launcher: ResourceParam[Any], people: DataFrame)
 @asset(
         required_resource_keys={"pyspark_submit_launcher"},
         compute_kind='spark',
-        group='yelp_assets'
+        group_name='yelp_assets'
         )
 def yelp_reviews_spark(context):
     step_launcher = context.resources.pyspark_submit_launcher
