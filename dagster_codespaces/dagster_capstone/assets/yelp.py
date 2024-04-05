@@ -60,8 +60,8 @@ def yelp_data(context) -> pl.DataFrame:
         s3_path = f"{s3_prefix}/{file_key}"
         context.log.info(f's3 path: {s3_path}')
         obj = s3.get_object(Bucket=s3_bucket, Key=s3_path)
-        content = obj['Body'] #.read()
-        lazy_df = pl.scan_ndjson(content)#.lazy()
+        content = obj['Body'].read()
+        lazy_df = pl.read_ndjson(content).lazy()
 
         yield Output(lazy_df, asset_name)
 
