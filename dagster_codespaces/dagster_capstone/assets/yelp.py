@@ -59,7 +59,7 @@ def yelp_data(context):
     s3 = context.resources.s3
 
     for asset_name, file_key in file_keys.items():
-        s3_path = f"s3://{s3_bucket}/{s3_prefix}/{file_key}".decode('utf-8')
+        s3_path = f"s3://{s3_bucket}/{s3_prefix}/{file_key}".encode('utf-8')
         context.log.info(f's3 path: {s3_path}')
 
         # Using s3fs to stream data directly into Polars
@@ -68,7 +68,7 @@ def yelp_data(context):
         context.log.info(f'loading dataframe lazily')
         # lazy_df = pl.scan_ndjson(s3_path, storage_options={'s3': s3})
 
-        with fs.open(s3_path, mode='rt') as f:
+        with fs.open(s3_path, mode ='rt') as f:
             context.log.info(f's3 object type: {type(f)}')
             context.log.info(f'loading dataframe lazily')
             lazy_df = pl.scan_ndjson(f)
