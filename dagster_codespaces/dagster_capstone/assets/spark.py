@@ -21,7 +21,9 @@ class ParquetIOManager(ConfigurableIOManager):
 def people(pyspark: PySparkResource, pyspark_step_launcher: ResourceParam[Any]) -> DataFrame:
     schema = StructType([StructField("name", StringType()), StructField("age", IntegerType())])
     rows = [Row(name="Thom", age=51), Row(name="Jonny", age=48), Row(name="Nigel", age=49)]
-    return pyspark.spark_session.createDataFrame(rows, schema)
+    pyspark.spark_session.createDataFrame(rows, schema)
+
+    pass
 
 @asset(compute_kind='spark')
 def people_over_50(pyspark_step_launcher: ResourceParam[Any], people: DataFrame) -> DataFrame:
@@ -30,9 +32,10 @@ def people_over_50(pyspark_step_launcher: ResourceParam[Any], people: DataFrame)
 @asset(
         required_resource_keys={"pyspark_submit_launcher"},
         compute_kind='spark',
-        group_name='yelp_assets'
+        group_name='yelp_assets',
+        deps=['kaggle_file']
         )
-def yelp_reviews_spark(context):
+def yelp_reviews(context):
     step_launcher = context.resources.pyspark_submit_launcher
     step_launcher.run_pyspark_job()
 

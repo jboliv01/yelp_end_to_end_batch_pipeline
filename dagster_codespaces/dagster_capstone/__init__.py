@@ -37,16 +37,16 @@ defs = Definitions(
                 "wait_for_logs": True,
             }
         ),
-        "pyspark_submit_launcher": emr_pyspark_step_launcher.configured(
+        "pyspark_step_launcher": emr_pyspark_step_launcher.configured(
             {
                 "cluster_id": {"env": "EMR_CLUSTER_ID"},
-                "s3_job_package_path": 's3://de-capstone-project/emr-resources/spark-code/',
+                "s3_job_package_path": 's3://de-capstone-project/emr-resources/spark-code/emr_spark_yelp_reviews.zip',
                 "local_job_package_path": str(Path(__file__).parent.parent),
                 "deploy_local_job_package": False,
                 "region_name": "us-west-2",
                 "staging_bucket": "de-capstone-project",
                 "staging_prefix": "staging",
-                "wait_for_logs": True,
+                "wait_for_logs": False,
             }
         ),
         "pyspark": emr_pyspark,

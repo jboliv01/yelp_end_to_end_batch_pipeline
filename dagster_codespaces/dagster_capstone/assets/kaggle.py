@@ -15,7 +15,6 @@ class KaggleFileManager(IOManager):
         bucket_name = context.resource_config['s3_bucket']
         s3_key_prefix = context.resource_config.get('s3_key_prefix', '')
 
-        # Assuming obj is the directory containing the downloaded files
         for file_name in os.listdir(obj):
             file_path = os.path.join(obj, file_name)
             if os.path.isfile(file_path):
@@ -25,8 +24,6 @@ class KaggleFileManager(IOManager):
                 context.log.info(f"Finished {file_name} to s3://{bucket_name}/{s3_key}")
 
     def load_input(self, context):
-        # Loading input is not relevant for the download asset, but you could implement
-        # downloading from S3 here if needed
         pass
 
 @io_manager(config_schema={
@@ -38,7 +35,7 @@ def kaggle_file_manager():
 
 
 @asset(
-    # io_manager_key='kaggle_io_manager',
+    io_manager_key='kaggle_io_manager',
     config_schema={
         "kaggle_dataset": Field(str, default_value='yelp-dataset/yelp-dataset'),
         "file_path": Field(str, default_value=str(Path(__file__).parents[3] / 'data' / 'raw' / 'kaggle'))
@@ -64,11 +61,3 @@ def kaggle_file(context) -> str:
         context.log.info("Dataset already exists. Skipping download.")
 
     return file_path
-
-# @asset(group_name='yelp_assets')
-# def yelp_path(context, kaggle_file: str) -> None:
-#     context.log.info(f'file_path: {kaggle_file}')
-#     for file_name in os.listdir(kaggle_file):
-#             file_path = os.path.join(kaggle_file, file_name)
-#             context.log.info(f'file: {file_name}')
-#     pass
