@@ -1,5 +1,5 @@
 import boto3
-import argparse
+from dagster_pipes import PipesContext, open_dagster_pipes
 
 def submit_spark_job_to_emr(cluster_id, job_name, spark_script_path, region):#, s3_output_path):
     """
@@ -9,7 +9,11 @@ def submit_spark_job_to_emr(cluster_id, job_name, spark_script_path, region):#, 
     :param spark_script_path: The S3 path to the Spark script.
     :param s3_output_path: The S3 path for the output of the Spark job.
     """
-    client = boto3.client('emr', region_name=region)
+    try:
+        client = boto3.client('emr', region_name=region)
+    except Exception as e:
+        print(f'Error initializing EMR client: {e}')
+
     step = {
     'Name': job_name,
     'ActionOnFailure': 'CANCEL_AND_WAIT',
@@ -26,40 +30,34 @@ def submit_spark_job_to_emr(cluster_id, job_name, spark_script_path, region):#, 
         ]
     }
     }
-    response = client.add_job_flow_steps(JobFlowId=cluster_id, Steps=[step])
-    return response['StepIds']
 
-
+    try:
+        response = client.add_job_flow_steps(JobFlowId=cluster_id, Steps=[step])
+        return response['StepIds']
+    except Exception as e:
+        print(f'Error submitting job: {e}')
+        raise
+    
 
 def main():
+    context = PipesContext.get()
 
-    cluster_id = 'j-2YLAXTLFQWW5Z' 
-    job_name = 'Pi'
-    s3_spark_code_path = 's3://de-capstone-project/emr-resources/spark-code/emr_spark_yelp_reviews.py' 
-    s3_output_path = 's3://de-capstone-project/yelp/processed/'
-    region = 'us-west-2'
+    cluster_id = context.get_extra('cluster_id')
+    job_name = context.get_extra('job_name')
+    s3_spark_code_path = context.get_extra('s3_spark_code_path')
+    region = context.get_extra('region')
 
-    parser = argparse.ArgumentParser(
-                    prog='Parse Spark Job Details',
-                    description='What the program does',
-                    epilog='Text at the bottom of help')
+    context.log.info(f"processing cluster_id: {cluster_id}")
     
-    parser.add_argument('cluster_id', type=str, required=True)
-    parser.add_argument('job_name', type=str, required=True) 
-    parser.add_argument('s3_spark_code_path', type=str, required=True)
-    parser.add_argument('region_name', type=str, requred=True)
-    
-    args = parser.parse_args()
-
-    cluster_id = args.cluster_id
-    job_name = args.job_name
-    s3_spark_code_path = args.s3_spark_code_path
-    region = args.region_name
-
-    step_id = submit_spark_job_to_emr(cluster_id, job_name, s3_spark_code_path, region)#, s3_output_path)
+    step_id = submit_spark_job_to_emr(cluster_id, job_name, s3_spark_code_path, region)
     print(f'Submitted job with step ID: {step_id}')
 
     return step_id
 
 if __name__ == "__main__":
-    main()
+    with open_dagster_pipes():
+        main()
+
+    
+    
+ 
