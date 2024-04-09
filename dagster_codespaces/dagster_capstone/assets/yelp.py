@@ -149,7 +149,7 @@ def yelp_businesses(context, yelp_business_data):
     context.log.info(f"s3 Export Path {s3_path}")
 
     with fs.open(f"s3://{s3_path}", mode="wb") as f:
-        df.write_parquet(f)
+        df.write_parquet(f, use_pyarrow=True, compression='snappy')
 
     pass
 
@@ -168,8 +168,7 @@ def yelp_tips(context, yelp_tip_data):
     context.log.info(f"s3 Export Path {s3_path}")
 
     with fs.open(f"s3://{s3_path}", mode="wb") as f:
-        df.write_parquet(f, use_pyarrow=True)
-
+        df.write_parquet(f, use_pyarrow=True, compression='snappy')
 
     pass
 
