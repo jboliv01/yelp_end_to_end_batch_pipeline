@@ -44,7 +44,7 @@ def create_emr_cluster(region, context):
         VisibleToAllUsers=True,
         AutoScalingRole="EMR_AutoScaling_DefaultRole",  # Adjust as necessary
         ScaleDownBehavior="TERMINATE_AT_TASK_COMPLETION",
-        AutoTerminationPolicy={"IdleTimeout": 3600}
+        AutoTerminationPolicy={"IdleTimeout": 1800}
     )
 
     cluster_id = cluster_response['JobFlowId']

@@ -38,131 +38,114 @@ import s3fs
 #     return JsonToParquetS3IOManager(s3_resource=s3, s3_bucket=s3_bucket, s3_prefix=s3_prefix)
 
 
-# @asset(required_resource_keys={"s3"},
-#        group_name='yelp_assets')
-# def write_to_s3(context):
-    
-#     s3 = context.resources.s3
-
-#     df = pl.DataFrame({
-#     "name": ["Alice", "Bob", "Charlie"]
-#     })
-
-#     context.log.info(f's3 credentials {dir(s3._get_credentials())}')
-
-#     #s3_session = s3._get_credentials().get_frozen_credentials()
-#     # context.log.info(f's3 credentials dir {dir(s3_session)}')
-#     # context.log.info(f's3 credentials {s3_session}')
-
-#     fs = s3fs.S3FileSystem()
-#     s3_bucket = 'de-capstone-project'
-#     s3_prefix = 'yelp/processed/test'
-#     s3_path = f"{s3_bucket}/{s3_prefix}/file.parquet"
-#     context.log.info(f's3 Export Path {s3_path}')
-
-#     # Use s3fs to open a file in write mode and write the dataframe to it
-#     with fs.open(f's3://{s3_path}', mode='wb') as f:
-#         df.write_parquet(f)
-
-#     return 'complete
-
 from dagster import asset, multi_asset, AssetOut, Output, Field
 import polars as pl
 import s3fs
 
-# class MyIOManager(IOManager):     
-#     def has_output(self, context):     
-#          # Implement logic to check if the upstream asset's output exists   
-#     def handle_output(self, context, obj):         
-#         # Handle storing the output 
-#     def load_input(self, context):         
-#         # Handle loading the input             
-                   
-# @io_manager 
-# def my_io_manager():     
-#     return MyIOManager()  
+# class MyIOManager(IOManager):
+#     def has_output(self, context):
+#          # Implement logic to check if the upstream asset's output exists
+#     def handle_output(self, context, obj):
+#         # Handle storing the output
+#     def load_input(self, context):
+#         # Handle loading the input
+
+# @io_manager
+# def my_io_manager():
+#     return MyIOManager()
+
 
 @multi_asset(
     outs={
-        "yelp_user_data": AssetOut(is_required=False), 
+        "yelp_user_data": AssetOut(is_required=False),
         "yelp_business_data": AssetOut(is_required=False),
-        "yelp_tip_data": AssetOut(is_required=False)
+        "yelp_tip_data": AssetOut(is_required=False),
     },
     can_subset=True,
-    config_schema={'file_keys': Field(dict, 
-                                      default_value={'yelp_business_data':'yelp_academic_dataset_business.json',
-                                                    'yelp_user_data':'yelp_academic_dataset_user.json',
-                                                    'yelp_tip_data':'yelp_academic_dataset_tip.json'},
-                                      is_required=False)},
+    config_schema={
+        "file_keys": Field(
+            dict,
+            default_value={
+                "yelp_business_data": "yelp_academic_dataset_business.json",
+                "yelp_user_data": "yelp_academic_dataset_user.json",
+                "yelp_tip_data": "yelp_academic_dataset_tip.json",
+            },
+            is_required=False,
+        )
+    },
     required_resource_keys={"s3"},
-    deps=['kaggle_file'],
-    group_name='yelp_assets',
-    compute_kind='python'
+    deps=["kaggle_file"],
+    group_name="yelp_assets",
+    compute_kind="python",
 )
 def yelp_data(context) -> pl.DataFrame:
-    '''load each yelp json dataset into a polars dataframe'''
+    """load each yelp json dataset into a polars dataframe"""
     s3 = context.resources.s3
-    s3_bucket = 'de-capstone-project'
-    s3_prefix = 'yelp/raw'
-    file_keys = context.op_config['file_keys']
+    s3_bucket = "de-capstone-project"
+    s3_prefix = "yelp/raw"
+    file_keys = context.op_config["file_keys"]
 
     for asset_name, file_key in file_keys.items():
         s3_path = f"{s3_prefix}/{file_key}"
-        context.log.info(f's3 path: {s3_path}')
+        context.log.info(f"s3 path: {s3_path}")
         obj = s3.get_object(Bucket=s3_bucket, Key=s3_path)
-        context.log.info('reading json body')
-        content = obj['Body'].read()
-        context.log.info('loading lazy frame')
+        context.log.info("reading json body")
+        content = obj["Body"].read()
+        context.log.info("loading lazy frame")
         lazy_df = pl.read_ndjson(content).lazy()
-        context.log.info('deleting object and content')
+        context.log.info("deleting object and content")
         del obj, content
-        context.log.info('yielding output')
+        context.log.info("yielding output")
         yield Output(lazy_df, asset_name)
 
 
-@asset(group_name='yelp_assets',
-       compute_kind='polars')
+@asset(group_name="yelp_assets", compute_kind="polars")
 def yelp_users(yelp_user_data) -> pl.DataFrame:
-    '''returns a subset of yelp user data'''
+    """returns a subset of yelp user data"""
     return yelp_user_data.head(10).collect()
 
-@asset(group_name='yelp_assets',
-       compute_kind='polars')
-def yelp_businesses(yelp_business_data) -> pl.DataFrame:
-    '''returns a subset of yelp business data'''
-    return yelp_business_data.head(10).collect()
 
-@asset(group_name='yelp_assets',
-       compute_kind='polars')
+@asset(group_name="yelp_assets", compute_kind="polars")
+def yelp_businesses(context, yelp_business_data):
+    """returns a subset of yelp business data"""
+
+    df = yelp_business_data.collect()
+
+    df = df.select(
+        [
+            "business_id",
+            "name",
+            "address",
+            "city",
+            "state",
+            "postal_code",
+            "latitude",
+            "longitude",
+            "stars",
+            "review_count",
+            "is_open",
+            "categories",
+        ]
+    )
+
+    fs = s3fs.S3FileSystem()
+
+    s3_bucket = "de-capstone-project"
+    s3_prefix = "yelp/processed/businesses"
+    s3_path = f"{s3_bucket}/{s3_prefix}/file.parquet"
+    context.log.info(f"s3 Export Path {s3_path}")
+
+    with fs.open(f"s3://{s3_path}", mode="wb") as f:
+        df.write_parquet(f)
+
+    pass
+
+
+@asset(group_name="yelp_assets", compute_kind="polars")
 def yelp_tips(yelp_tip_data) -> pl.DataFrame:
-    '''returns a subset of yelp business data'''
+    """returns a subset of yelp business data"""
     return yelp_tip_data.head(10).collect()
 
-
-# @asset(group_name='yelp_assets',
-#        required_resource_keys={"s3"},
-#        compute_kind='polars')
-# def yelp_reviews(context, yelp_review_data: pl.DataFrame):
-#     '''returns a subset of yelp business data'''
-#     df = yelp_review_data
-#     df = df.with_columns(pl.col('date').str.strptime(pl.Datetime).alias('datetime')).drop('date')
-#     df = df.with_columns([
-#         pl.col('datetime').dt.date().alias('date'),
-#         pl.col('datetime').dt.year().alias('year'),
-#         pl.col('datetime').dt.month().alias('month')
-#         ])
- 
-#     fs = s3fs.S3FileSystem()
-#     s3_bucket = 'de-capstone-project'
-#     s3_prefix = 'yelp/processed/reviews'
-#     s3_path = f"{s3_bucket}/{s3_prefix}"
-#     context.log.info(f's3 Export Path {s3_path}')
-
-#     # Use s3fs to open a file in write mode and write the dataframe to it
-#     with fs.open(f's3://{s3_path}', mode='wb') as f:
-#         df.collect().write_parquet(s3_path, use_pyarrow=True, pyarrow_options={"partition_cols": ["year","month"]})
-
-#     return 'complete'
 
 # @asset(config_schema={'file_key': Field(str)},
 #        required_resource_keys={"s3"},
@@ -181,6 +164,6 @@ def yelp_tips(yelp_tip_data) -> pl.DataFrame:
 #     # Read the content as a string
 #     content = obj['Body'].read()
 
-#     lazy_df = pl.read_ndjson(content).lazy() 
+#     lazy_df = pl.read_ndjson(content).lazy()
 
 #     return lazy_df.head(10).collect()

@@ -1,4 +1,3 @@
-*tmph1o7vqkp
 *.csv
 *polars.py
 *.parquet
@@ -11,3 +10,4 @@
 __pycache__
 .env
 *dagster_capstone.egg-info*
+explore.py
