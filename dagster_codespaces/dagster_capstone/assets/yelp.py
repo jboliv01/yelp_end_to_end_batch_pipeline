@@ -100,7 +100,7 @@ def yelp_data(context) -> pl.DataFrame:
 
 
 @asset(group_name="yelp_assets", compute_kind="polars")
-def yelp_users(context, yelp_user_data) -> pl.DataFrame:
+def yelp_users(context, yelp_user_data):
     """returns a subset of yelp user data"""
 
     df = yelp_user_data.collect()
@@ -113,7 +113,7 @@ def yelp_users(context, yelp_user_data) -> pl.DataFrame:
     context.log.info(f"s3 Export Path {s3_path}")
 
     with fs.open(f"s3://{s3_path}", mode="wb") as f:
-        df.write_parquet(f, use_pyarrow=True)
+        df.write_parquet(f, use_pyarrow=True, compression='snappy')
 
     pass
 
