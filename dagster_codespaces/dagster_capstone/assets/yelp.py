@@ -103,7 +103,7 @@ def yelp_data(context) -> pl.DataFrame:
 def yelp_users(context, yelp_user_data) -> pl.DataFrame:
     """returns a subset of yelp user data"""
 
-    df = yelp_user_data
+    df = yelp_user_data.collect()
 
     fs = s3fs.S3FileSystem()
 
