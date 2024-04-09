@@ -100,9 +100,22 @@ def yelp_data(context) -> pl.DataFrame:
 
 
 @asset(group_name="yelp_assets", compute_kind="polars")
-def yelp_users(yelp_user_data) -> pl.DataFrame:
+def yelp_users(context, yelp_user_data) -> pl.DataFrame:
     """returns a subset of yelp user data"""
-    return yelp_user_data.head(10).collect()
+
+    df = yelp_user_data
+
+    fs = s3fs.S3FileSystem()
+
+    s3_bucket = "de-capstone-project"
+    s3_prefix = "yelp/processed/users"
+    s3_path = f"{s3_bucket}/{s3_prefix}/users.parquet"
+    context.log.info(f"s3 Export Path {s3_path}")
+
+    with fs.open(f"s3://{s3_path}", mode="wb") as f:
+        df.write_parquet(f, use_pyarrow=True)
+
+    pass
 
 
 @asset(group_name="yelp_assets", compute_kind="polars")
@@ -142,9 +155,23 @@ def yelp_businesses(context, yelp_business_data):
 
 
 @asset(group_name="yelp_assets", compute_kind="polars")
-def yelp_tips(yelp_tip_data) -> pl.DataFrame:
+def yelp_tips(context, yelp_tip_data):
     """returns a subset of yelp business data"""
-    return yelp_tip_data.head(10).collect()
+
+    df = yelp_tip_data.collect()
+
+    fs = s3fs.S3FileSystem()
+
+    s3_bucket = "de-capstone-project"
+    s3_prefix = "yelp/processed/tips"
+    s3_path = f"{s3_bucket}/{s3_prefix}/tips.parquet"
+    context.log.info(f"s3 Export Path {s3_path}")
+
+    with fs.open(f"s3://{s3_path}", mode="wb") as f:
+        df.write_parquet(f, use_pyarrow=True)
+
+
+    pass
 
 
 # @asset(config_schema={'file_key': Field(str)},
