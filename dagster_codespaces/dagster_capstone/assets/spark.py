@@ -14,7 +14,7 @@ from dagster import (
 
 
 @asset(config_schema={"region": Field(str, default_value="us-west-2", is_required=False)}, compute_kind='spark', group_name='yelp_assets', deps=['kaggle_file'])
-def create_emr_cluster(
+def emr_cluster(
     context: AssetExecutionContext, pipes_subprocess_client: PipesSubprocessClient
     ):
     cmd = [
@@ -30,24 +30,24 @@ def create_emr_cluster(
 
     return result
 
-@asset(config_schema={"job_name": Field(str, default_value="YelpReviews"),
+@asset(config_schema={
         "s3_spark_code_path": Field(str, default_value="s3://de-capstone-project/emr-resources/spark-code/emr_spark_yelp_reviews.py"),
         "region": Field(str, default_value="us-west-2"),
       },
     compute_kind='spark',
     group_name='yelp_assets',
-    deps=['create_emr_cluster']
+    deps=['emr_cluster']
 )
-def emr_pyspark_submit(
+def yelp_reviews(
     context: AssetExecutionContext,
     pipes_subprocess_client: PipesSubprocessClient,
     ):
 
     instance = context.instance
-    materialization = instance.get_latest_materialization_event(AssetKey(["create_emr_cluster"])).asset_materialization
+    materialization = instance.get_latest_materialization_event(AssetKey(["emr_cluster"])).asset_materialization
     
     cluster_id = materialization.metadata["cluster_id"].value
-    job_name = context.op_config["job_name"]
+    job_name = "YelpReviews"
     s3_spark_code_path = context.op_config["s3_spark_code_path"]
     region = context.op_config["region"]
 

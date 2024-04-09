@@ -68,7 +68,7 @@ def main():
     region = context.get_extra('region')
     cluster_id = create_emr_cluster(region, context)
 
-    context.report_asset_materialization(asset_key='create_emr_cluster', 
+    context.report_asset_materialization(asset_key='emr_cluster', 
                                          metadata={"cluster_id": cluster_id})
 
 
