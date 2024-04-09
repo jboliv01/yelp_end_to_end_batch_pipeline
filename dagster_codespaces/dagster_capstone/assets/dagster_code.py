@@ -2,21 +2,24 @@ import shutil
 
 from dagster import (
     AssetExecutionContext,
+    MaterializeResult,
     Definitions,
     PipesSubprocessClient,
     asset,
     file_relative_path,
-    Field
+    Field,
+    AssetKey
+
 )
 
 
-@asset(config_schema={"region": Field(str, default_value="us-west-2", is_required=False)})
+@asset(config_schema={"region": Field(str, default_value="us-west-2", is_required=False)}, compute_kind='spark')
 def create_emr_cluster(
     context: AssetExecutionContext, pipes_subprocess_client: PipesSubprocessClient
     ):
     cmd = [
         shutil.which("python"),
-        file_relative_path(__file__, "create_emr_cluster.py"),
+        file_relative_path(__file__, "external_create_emr_cluster.py"),
     ]
 
     region = context.op_config["region"]
@@ -27,17 +30,22 @@ def create_emr_cluster(
 
     return result
 
-
 @asset(config_schema={"job_name": Field(str, default_value="YelpReviews"),
         "s3_spark_code_path": Field(str, default_value="s3://de-capstone-project/emr-resources/spark-code/emr_spark_yelp_reviews.py"),
-        "region": Field(str, default_value="us-west-2")})
+        "region": Field(str, default_value="us-west-2"),
+      },
+    compute_kind='spark',
+    deps=['create_emr_cluster']
+)
 def emr_pyspark_submit(
-    create_emr_cluster: str,
     context: AssetExecutionContext,
     pipes_subprocess_client: PipesSubprocessClient,
     ):
 
-    cluster_id = create_emr_cluster
+    instance = context.instance
+    materialization = instance.get_latest_materialization_event(AssetKey(["create_emr_cluster"])).asset_materialization
+    
+    cluster_id = materialization.metadata["cluster_id"].value
     job_name = context.op_config["job_name"]
     s3_spark_code_path = context.op_config["s3_spark_code_path"]
     region = context.op_config["region"]
@@ -53,7 +61,7 @@ def emr_pyspark_submit(
 
     cmd = [
         python_executable,
-        file_relative_path(__file__, "external_spark.py"),
+        file_relative_path(__file__, "external_run_spark_job.py"),
     ]
 
     context.log.info(f"command: {cmd}")
@@ -71,12 +79,10 @@ def emr_pyspark_submit(
 
     return result.get_materialize_result()
 
-@asset
-def test():
-    pass
-
 
 defs = Definitions(
     assets=[create_emr_cluster, emr_pyspark_submit],
     resources={"pipes_subprocess_client": PipesSubprocessClient()},
 )
+
+
