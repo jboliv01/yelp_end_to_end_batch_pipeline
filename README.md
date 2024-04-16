@@ -14,13 +14,18 @@
 Let's start by creating a virtual python environment. 
 
 ```bash
-py -m venv dagster_venv
+python3.10 -m venv myenv
 ```
 
 ```bash
-..\dagster_venv\Scripts\Activate
+cd myenv/bin
+chmod +x activate
+```
 
-dagster dev -d dagster_codespaces -m dagster_capstone
+Now switch the python interpreter to our newly created virtual python environment
+
+```bash
+..\myenv\Scripts\Activate
 ```
 
 First, install your Dagster code location as a Python package by running the command below in your terminal. By using the --editable (`-e`) flag, pip will install your Python package in ["editable mode"](https://pip.pypa.io/en/latest/topics/local-project-installs/#editable-installs) so that as you develop, local code changes will automatically apply.
@@ -35,15 +40,12 @@ Then, start the Dagster UI web server:
 
 ```bash
 dagster dev
+
+(old) dagster dev -d dagster_codespaces -m dagster_capstone
 ```
 
 Open http://localhost:3000 with your browser to see the project.
 
-## Development
-
-### Adding new Python dependencies
-
-You can specify new Python dependencies in `setup.py`.
 
 ## Deploy on Dagster Cloud
 

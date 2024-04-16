@@ -6,7 +6,8 @@
 *.duckdb*
 *.db
 *.pdf
-*dagster_venv
+myenv*
+temp*
 __pycache__
 .env
 *dagster_capstone.egg-info*

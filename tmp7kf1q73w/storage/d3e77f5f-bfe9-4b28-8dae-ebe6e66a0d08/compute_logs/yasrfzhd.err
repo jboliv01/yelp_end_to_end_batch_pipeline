@@ -1,0 +1,25 @@
+[32m2024-04-16 14:38:48 -0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB_0 - d3e77f5f-bfe9-4b28-8dae-ebe6e66a0d08 - 74522 - LOGS_CAPTURED - Started capturing logs in process (pid: 74522).
+[32m2024-04-16 14:38:48 -0700[0m - dagster - [34mDEBUG[0m - __ASSET_JOB_0 - d3e77f5f-bfe9-4b28-8dae-ebe6e66a0d08 - 74522 - yelp_business_data_duckdb - STEP_START - Started execution of step "yelp_business_data_duckdb".
+[32m2024-04-16 14:38:48 -0700[0m - dagster - [34mINFO[0m - __ASSET_JOB_0 - d3e77f5f-bfe9-4b28-8dae-ebe6e66a0d08 - yelp_business_data_duckdb - writing to: s3://de-capstone-project/yelp/raw/yelp_academic_dataset_business.json
+[32m2024-04-16 14:38:50 -0700[0m - dagster - [34mERROR[0m - [31m__ASSET_JOB_0 - d3e77f5f-bfe9-4b28-8dae-ebe6e66a0d08 - 74522 - yelp_business_data_duckdb - STEP_FAILURE - Execution of step "yelp_business_data_duckdb" failed.
+
+dagster._core.errors.DagsterExecutionStepExecutionError: Error occurred while executing op "yelp_business_data_duckdb"::
+
+duckdb.duckdb.ParserException: Parser Error: syntax error at or near ":"
+LINE 15:             from read_json_auto(s3://de-capstone-project/yelp/raw/yelp_academic_dataset_business.json, format = 'newline_delimited');
+        );
+    ...
+                                           ^
+
+Stack Trace:
+  File "/Users/jonah/Desktop/Repositories/yelp_end_to_end_batch_pipeline/myenv/lib/python3.10/site-packages/dagster/_core/execution/plan/utils.py", line 54, in op_execution_error_boundary
+    yield
+  File "/Users/jonah/Desktop/Repositories/yelp_end_to_end_batch_pipeline/myenv/lib/python3.10/site-packages/dagster/_utils/__init__.py", line 463, in iterate_with_context
+    next_output = next(iterator)
+  File "/Users/jonah/Desktop/Repositories/yelp_end_to_end_batch_pipeline/myenv/lib/python3.10/site-packages/dagster/_core/execution/plan/compute_generator.py", line 131, in _coerce_op_compute_fn_to_iterator
+    result = invoke_compute_fn(
+  File "/Users/jonah/Desktop/Repositories/yelp_end_to_end_batch_pipeline/myenv/lib/python3.10/site-packages/dagster/_core/execution/plan/compute_generator.py", line 125, in invoke_compute_fn
+    return fn(context, **args_to_pass) if context_arg_provided else fn(**args_to_pass)
+  File "/Users/jonah/Desktop/Repositories/yelp_end_to_end_batch_pipeline/dagster_capstone/assets/yelp.py", line 133, in yelp_business_data_duckdb
+    conn.execute(query)
+[0m

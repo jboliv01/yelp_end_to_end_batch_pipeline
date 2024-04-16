@@ -1,5 +1,5 @@
 locations:
-  - location_name: yelp-e2e-capstone
+  - location_name: dagster_capstone
     code_source:
       package_name: dagster_capstone
-    working_directory: ./dagster_codespaces
+    # working_directory: ./dagster_codespaces

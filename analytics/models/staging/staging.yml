@@ -1,0 +1,59 @@
+version: 2
+
+models:
+  - name: stg_trips
+    description: The trips source table, cleaned up and decoded
+    columns:
+      - name: pickup_datetime
+        description: The pickup datetime
+      - name: dropoff_datetime
+        description: The dropoff datetime
+      - name: passenger_count
+        description: The passenger count
+      - name: trip_distance
+        description: The trip distance
+      - name: pickup_zone_id
+        description: The pickup location id
+      - name: dropoff_zone_id
+        description: The dropoff location id
+      - name: fare_amount
+        description: The fare amount
+      - name: total_amount
+        description: The total amount
+  - name: stg_zones
+    description: The taxi zones, with enriched records and additional flags
+    columns:
+      - name: zone_id
+        description: The location id
+        tests:
+          - not_null
+      - name: borough
+        description: The borough
+        tests:
+          - accepted_values:
+              values:
+                - Manhattan
+                - Bronx
+                - Brooklyn
+                - Queens
+                - Staten Island
+                - EWR
+      - name: stg_yelp_business
+        description: The yelp business data cleaned uo
+        columns:
+          - name: business_id
+            description: business identifier
+          - name: name
+            description: business name
+          - name: city
+          - name: postal_code
+          - name: state
+            description: state in which business resides
+          - name: latitude
+            description: latitude 
+          - name: longitude
+            description: longitude
+          - name: stars
+          - name: review_count
+          - name: is_open
+          - name: categories

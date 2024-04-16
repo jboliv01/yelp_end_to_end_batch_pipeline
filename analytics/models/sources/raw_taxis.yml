@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+  - name: raw_taxis
+    schema: main
+    tables:
+      - name: zones
+      - name: trips
+  - name: raw_yelp
+    schema: main
+    tables:
+      - name: external_business
+      - name: external_reviews
+      - name: external_users
+      - name: external_tips
