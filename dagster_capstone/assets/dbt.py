@@ -14,7 +14,11 @@ class CustomizedDagsterDbtTranslator(DagsterDbtTranslator):
         resource_type = dbt_resource_props["resource_type"]
         name = dbt_resource_props["name"]
         if resource_type == "source":
-            return AssetKey(f"taxi_{name}")
+            source = dbt_resource_props["source_name"]
+            if source  == 'raw_yelp':
+                return AssetKey(f"{name}")
+            else:
+                return AssetKey(f"taxi_{name}")
         else:
             return super().get_asset_key(dbt_resource_props)
     
@@ -22,7 +26,7 @@ class CustomizedDagsterDbtTranslator(DagsterDbtTranslator):
         return dbt_resource_props["fqn"][1]
 
 
-dbt_resource.cli(["--quiet", "parse"]).wait()
+# dbt_resource.cli(["--quiet", "parse"]).wait()
 
 if os.getenv("DAGSTER_DBT_PARSE_PROJECT_ON_LOAD"):
     dbt_manifest_path = (

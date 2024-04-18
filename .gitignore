@@ -8,6 +8,7 @@
 *.pdf
 myenv*
 temp*
+tmp*
 __pycache__
 .env
 *dagster_capstone.egg-info*

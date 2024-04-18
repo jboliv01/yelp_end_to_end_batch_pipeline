@@ -9,7 +9,7 @@ sources:
   - name: raw_yelp
     schema: main
     tables:
-      - name: external_business
-      - name: external_reviews
-      - name: external_users
-      - name: external_tips
+      - name: external_yelp_business
+      - name: external_yelp_reviews
+      - name: external_yelp_users
+      - name: external_yelp_tips

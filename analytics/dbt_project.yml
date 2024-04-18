@@ -34,3 +34,12 @@ models:
   analytics:
     # Config indicated by + and applies to all files under models/example/
     +materialized: table
+    enabled: false
+    staging:
+      enabled: false
+      yelp:
+        enabled: true
+      
+
+
+    

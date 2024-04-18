@@ -57,3 +57,14 @@ models:
           - name: review_count
           - name: is_open
           - name: categories
+      - name: stg_yelp_users
+        description: The yelp user data cleaned uo
+        columns:
+          - name: user_id
+            description: user identifier
+          - name: name
+            description: user name
+          - name: review_count
+            description: number of reviews a user has made
+          - name: yelping_since
+            description: date a user started yelping

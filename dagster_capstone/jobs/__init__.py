@@ -12,9 +12,19 @@ dbt_trips_selection = build_dbt_asset_selection([dbt_analytics], "stg_trips").do
 trip_update_job = define_asset_job(
     name="trip_update_job",
     partitions_def=monthly_partition,
-    selection=AssetSelection.all() 
-    
+    selection=AssetSelection.all(),
+    config={
+        "execution": {
+            "config": {
+                "multiprocess": {
+                    "max_concurrent": 2,  # limits concurrent assets to 2
+                },
+            }
+        }
+    }
 )
+
+
 
 # weekly_update_job = define_asset_job(
 #     name="weekly_update_job",

@@ -15,7 +15,7 @@ from dagster import (
 @asset(
     config_schema={"region": Field(str, default_value="us-west-2", is_required=False)},
     compute_kind="spark",
-    group_name="transform_ingest",
+    group_name="compute",
     deps=["kaggle_file"],
 )
 def emr_cluster(
@@ -44,10 +44,10 @@ def emr_cluster(
         "region": Field(str, default_value="us-west-2"),
     },
     compute_kind="spark",
-    group_name="transform_ingest",
+    group_name="ingested",
     deps=["emr_cluster"],
 )
-def yelp_reviews(
+def partition_yelp_reviews(
     context: AssetExecutionContext,
     pipes_subprocess_client: PipesSubprocessClient,
 ):

@@ -1,6 +1,6 @@
 with raw_bus as (
     select *
-    from {{ source('raw_yelp', 'external_business') }}
+    from {{ source('raw_yelp', 'external_yelp_business') }}
 )
 select
     business_id,

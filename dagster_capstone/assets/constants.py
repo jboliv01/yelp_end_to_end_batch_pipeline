@@ -24,6 +24,8 @@ def get_path_for_env(path: str) -> str:
 
 
 YELP_BUSINESS_DATA_FILE_PATH = get_path_for_env(os.path.join("yelp", "raw", "yelp_academic_dataset_business.json"))
+YELP_USERS_DATA_FILE_PATH = get_path_for_env(os.path.join("yelp", "raw", "yelp_academic_dataset_user.json"))
+YELP_REVIEWS_DATA_FILE_PATH = get_path_for_env(os.path.join("yelp", "processed", "reviews" , "year=2021", "month=*", "*.parquet"))
 
 TAXI_ZONES_FILE_PATH = get_path_for_env(os.path.join("data", "raw", "taxi_zones.csv"))
 TAXI_TRIPS_TEMPLATE_FILE_PATH = get_path_for_env(

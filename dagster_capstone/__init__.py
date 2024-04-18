@@ -24,7 +24,7 @@ all_schedules = [trip_update_schedule]
 # all_sensors = [adhoc_request_sensor]
 
 defs = Definitions(
-    assets=[*kaggle_assets, *spark_assets, *yelp_asssets, *trip_assets, *dbt_analytics_assets],
+    assets=[*kaggle_assets, *spark_assets, *yelp_asssets, *dbt_analytics_assets],
     resources={
         "pipes_subprocess_client": PipesSubprocessClient(),
         "s3": S3Resource(region_name='us-east-2'),
