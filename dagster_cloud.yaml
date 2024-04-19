@@ -2,3 +2,4 @@ locations:
 - code_source:
     package_name: dagster_capstone
   location_name: dagster_capstone
+  working_directory: .
