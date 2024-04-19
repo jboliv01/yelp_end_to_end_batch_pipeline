@@ -92,7 +92,7 @@ from . import constants
 )
 def external_yelp_business(context, database: DuckDBResource):
     """The raw taxi zones dataset, loaded into a DuckDB database."""
-    context.log.info(f'writing to: {constants.YELP_BUSINESS_DATA_FILE_PATH}')
+    context.log.info(f'Reading raw data from: {constants.YELP_BUSINESS_DATA_FILE_PATH}')
     query = f"""
         create or replace table external_yelp_business as (
             select
@@ -111,6 +111,11 @@ def external_yelp_business(context, database: DuckDBResource):
         );
     """
 
+    if "md:yelp" in database.database:
+        context.log.info(f"Writing to Motherduck Prod")
+    else:
+        context.log.info(f"Writing to local {database.database}")
+
     with database.get_connection() as conn:
         conn.execute(query)
 
@@ -122,7 +127,7 @@ def external_yelp_business(context, database: DuckDBResource):
 )
 def external_yelp_users(context, database: DuckDBResource):
     """The raw taxi zones dataset, loaded into a DuckDB database."""
-    context.log.info(f'writing to: {constants.YELP_USERS_DATA_FILE_PATH}')
+    context.log.info(f'Reading raw data from: {constants.YELP_USERS_DATA_FILE_PATH}')
     query = f"""
         create or replace table external_yelp_users as (
             select user_id,
@@ -132,6 +137,11 @@ def external_yelp_users(context, database: DuckDBResource):
             from read_json_auto('{constants.YELP_USERS_DATA_FILE_PATH}', format = 'newline_delimited')
         );
     """
+
+    if "md:yelp" in database.database:
+        context.log.info(f"Writing to Motherduck Prod")
+    else:
+        context.log.info(f"Writing to local {database.database}")
 
     with database.get_connection() as conn:
         conn.execute(query)
@@ -143,7 +153,7 @@ def external_yelp_users(context, database: DuckDBResource):
 )
 def external_yelp_reviews(context, database: DuckDBResource):
     """The raw taxi zones dataset, loaded into a DuckDB database."""
-    context.log.info(f'writing to: {constants.YELP_REVIEWS_DATA_FILE_PATH}')
+    context.log.info(f'Reading raw data from: {constants.YELP_REVIEWS_DATA_FILE_PATH}')
     query = f"""
         create or replace table external_yelp_reviews as (
             select business_id,
@@ -155,6 +165,11 @@ def external_yelp_reviews(context, database: DuckDBResource):
             from READ_PARQUET('{constants.YELP_REVIEWS_DATA_FILE_PATH}')
         );
     """
+
+    if "md:yelp" in database.database:
+        context.log.info(f"Writing to Motherduck Prod")
+    else:
+        context.log.info(f"Writing to local {database.database}")
 
     with database.get_connection() as conn:
         conn.execute(query)
