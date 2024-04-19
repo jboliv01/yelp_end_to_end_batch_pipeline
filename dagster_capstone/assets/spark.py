@@ -16,7 +16,7 @@ from dagster import (
 from ..resources import session
 
 @asset(
-    config_schema={"region": Field(str, default_value="us-east-2", is_required=False), 
+    config_schema={"region": Field(str, default_value="us-east-2", is_required=False),
                    "s3_bucket_prefix": Field(str, default_value="s3://de-capstone-project/", is_required=False),
                    "vpc_default_subnet_id": Field(str, default_value="subnet-6762990c")
                    },
@@ -32,20 +32,18 @@ def emr_cluster(
         file_relative_path(__file__, "external_create_emr_cluster.py"),
     ]
 
-    
-    s3_bucket_prefix = context.op_config["s3_bucket_prefix"]
-    vpc_default_subnet_id = context.op_config["vpc_default_subnet_id"]
-    region = context.op_config["region"]
-    # overwrite test
+    # s3_bucket_prefix = context.op_config["s3_bucket_prefix"]
+    # vpc_default_subnet_id = context.op_config["vpc_default_subnet_id"]
+    # region = context.op_config["region"]
+
     s3_bucket_prefix = os.getenv("S3_BUCKET_PREFIX")
     vpc_default_subnet_id = os.getenv("VPC_DEFAULT_SUBNET_ID")
     region = os.getenv("AWS_REGION")
-    
 
     context.log.info(f"EMR Region: {region}")
     context.log.info(f"S3 Bucket Path: {s3_bucket_prefix}")
     context.log.info(f"Default VPC Subnet ID: {vpc_default_subnet_id}")
-    
+
 
     result = pipes_subprocess_client.run(
         command=cmd, context=context, extras={"region": region, "s3_bucket_prefix": s3_bucket_prefix, "vpc_default_subnet_id": vpc_default_subnet_id}
@@ -80,14 +78,14 @@ def partition_yelp_reviews(
     cluster_id = materialization.metadata["cluster_id"].value
     job_name = "YelpReviews"
 
-    s3_bucket_prefix = context.op_config['s3_bucket_prefix']
-    s3_spark_code_prefix = f'{s3_bucket_prefix}{context.op_config["s3_spark_code_prefix"]}'
-    region = context.op_config["region"]
+    # s3_bucket_prefix = context.op_config['s3_bucket_prefix']
+    # s3_spark_code_prefix = f'{s3_bucket_prefix}{context.op_config["s3_spark_code_prefix"]}'
+    # region = context.op_config["region"]
 
     s3_bucket_prefix = os.getenv("S3_BUCKET_PREFIX")
     s3_spark_code_prefix = f'{s3_bucket_prefix}{os.getenv("S3_SPARK_CODE_PREFIX")}'
     region = os.getenv("AWS_REGION")
-    
+
 
     context.log.info(f"Cluster: {cluster_id}")
     context.log.info(f"Job Name: {job_name}")
