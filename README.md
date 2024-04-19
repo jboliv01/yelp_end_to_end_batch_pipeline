@@ -40,8 +40,6 @@ Then, start the Dagster UI web server:
 
 ```bash
 dagster dev
-
-(old) dagster dev -d dagster_codespaces -m dagster_capstone
 ```
 
 Open http://localhost:3000 with your browser to see the project.
@@ -49,6 +47,6 @@ Open http://localhost:3000 with your browser to see the project.
 
 ## Deploy on Dagster Cloud
 
-The easiest way to deploy your Dagster project is to use Dagster Cloud.
+Instead of running locally, I recommend deploying on dagster cloud serverless. This will require you to publish this repo and github actions will deploy dagster to the cloud for you.
 
 Check out the [Dagster Cloud Documentation](https://docs.dagster.cloud) to learn more.
