@@ -210,9 +210,9 @@ Navigate to the **Overview** -> **Jobs** -> **yelp_etl_job** on Dagster's interf
 
 ## Run Streamlit
 
-In the root of the project repo, run to view the dashboard.
+In the root of the project repo, run to view the dashboard at http://localhost:8501.
 
-The Final Dashboard Should look as follows: 
+The Dashboard Should look as follows: 
 
 ```shell
 streamlit run capstone.py
