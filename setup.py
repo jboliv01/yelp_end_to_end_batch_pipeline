@@ -24,6 +24,7 @@ setup(
         "boto3",
         "pyarrow",
         "fastparquet",
+        "streamlit"
     ],
     extras_require={"dev": ["dagster-webserver", "pytest"]},
 )

@@ -1,0 +1,7 @@
+dagster==1.6.*
+dagster-aws
+dagster-duckdb
+dagster-pyspark
+boto3
+kaggle
+pandas
