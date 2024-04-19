@@ -10,8 +10,7 @@ myenv*
 temp*
 tmp*
 analytics/reports*
-metabase*
 __pycache__
 .env
-*dagster_capstone.egg-info*
+dagster_capstone.egg-info
 explore.py
