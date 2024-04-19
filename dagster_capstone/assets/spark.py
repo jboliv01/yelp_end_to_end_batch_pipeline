@@ -70,7 +70,7 @@ def partition_yelp_reviews(
     cluster_id = materialization.metadata["cluster_id"].value
     job_name = "YelpReviews"
     s3_bucket_prefix = EnvVar("S3_BUCKET_PREFIX")
-    s3_spark_code_path = f"{s3_bucket_prefix}{context.op_config["s3_spark_code_path"]}"
+    s3_spark_code_path = f'{s3_bucket_prefix}{context.op_config["s3_spark_code_path"]}'
     region = context.op_config["region"]
 
     context.log.info(f"Cluster: {cluster_id}")
