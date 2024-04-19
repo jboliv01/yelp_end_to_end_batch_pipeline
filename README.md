@@ -164,14 +164,14 @@ Before we can move on to executing our pipeline, be sure all of your environment
 
 Set up the following environment variables by duplicating the `.env.example` file and renaming it to `.env`:
 ```shell
-DUCKDB_DATABASE=data/staging/data.duckdb
 DAGSTER_ENVIRONMENT='prod'
 DAGSTER_DBT_PARSE_PROJECT_ON_LOAD=1
 AWS_ACCESS_KEY_ID='<your_aws_access_key_id>'
 AWS_SECRET_ACCESS_KEY='<your_aws_secret_access_key>'
 AWS_REGION='us-east-2'
 S3_BUCKET_PREFIX='s3://your-bucket-name/'
-MOTHERDUCK_TOKEN='<your_motherduck_token>'
+DUCKDB_DATABASE=data/staging/data.duckdb
+MOTHERDUCK_DATABASE='md:?motherduck_token=<your_motherduck_token>'
 ```
 
 ## Checklist ##
