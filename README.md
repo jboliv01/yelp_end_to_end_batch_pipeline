@@ -185,7 +185,9 @@ DAGSTER_DBT_PARSE_PROJECT_ON_LOAD=1
 AWS_ACCESS_KEY_ID='<your_aws_access_key_id>'
 AWS_SECRET_ACCESS_KEY='<your_aws_secret_access_key>'
 AWS_REGION='us-east-2'
-S3_BUCKET_PREFIX='s3://your-bucket-name/'
+VPC_SUBNET_ID='<your_default_vpc_subnet_id>'
+S3_BUCKET_PREFIX='s3://<your-bucket-name>/'
+S3_SPARK_CODE_PREFIX='emr-resources/spark-code/emr_spark_yelp_reviews.py'
 DUCKDB_DATABASE=data/staging/data.duckdb
 MOTHERDUCK_DATABASE='md:?motherduck_token=<your_motherduck_token>'
 ```
@@ -213,7 +215,7 @@ So far, we have:
 
  2. **Run Dagster Cloud (Recommended)**
 
-   1. Create a Dagster+ Cloud Free Trial Account
+   1. Create a Dagster+ Cloud Free Trial Account and Sign in to add your code location by connecting your GitHub account.
    2. Follow documentation [here](https://docs.dagster.io/dagster-plus/deployment/serverless#with-github) to deploy with a single click via GitHub Actions.
    3. Set Environmental Variables under **Deployment** -> **Environmental Variables**
 
