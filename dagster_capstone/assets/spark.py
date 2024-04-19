@@ -1,4 +1,5 @@
 import shutil
+import os
 
 from dagster import (
     AssetExecutionContext,
@@ -12,6 +13,7 @@ from dagster import (
     EnvVar
 )
 
+from ..resources import session
 
 @asset(
     config_schema={"region": Field(str, default_value="us-east-2", is_required=False), 
@@ -30,9 +32,17 @@ def emr_cluster(
         file_relative_path(__file__, "external_create_emr_cluster.py"),
     ]
 
-    region = context.op_config["region"]
+    
     s3_bucket_prefix = context.op_config["s3_bucket_prefix"]
     vpc_default_subnet_id = context.op_config["vpc_default_subnet_id"]
+    region = context.op_config["region"]
+
+    # overwrite test
+    s3_bucket_prefix = os.getenv("S3_BUCKET_PREFIX")
+    vpc_default_subnet_id = os.getenv("DEFAULT_VPC_SUBNET_ID")
+    region = os.getenv("AWS_REGION")
+    
+
     context.log.info(f"EMR Region: {region}")
     context.log.info(f"S3 Bucket Path: {s3_bucket_prefix}")
     context.log.info(f"Default VPC Subnet ID: {vpc_default_subnet_id}")
@@ -70,13 +80,19 @@ def partition_yelp_reviews(
 
     cluster_id = materialization.metadata["cluster_id"].value
     job_name = "YelpReviews"
+
     s3_bucket_prefix = context.op_config['s3_bucket_prefix']
-    s3_spark_code_path = f'{s3_bucket_prefix}{context.op_config["s3_spark_code_path"]}'
+    s3_spark_code_prefix = f'{s3_bucket_prefix}{context.op_config["s3_spark_code_prefix"]}'
     region = context.op_config["region"]
+
+    s3_bucket_prefix = os.getenv("S3_BUCKET_PREFIX")
+    s3_spark_code_prefix = f'{s3_bucket_prefix}{os.getenv("S3_SPARK_CODE_PREFIX")}'
+    region = os.getenv("AWS_REGION")
+    
 
     context.log.info(f"Cluster: {cluster_id}")
     context.log.info(f"Job Name: {job_name}")
-    context.log.info(f"S3 Path: {s3_spark_code_path}")
+    context.log.info(f"S3 Path: {s3_spark_code_prefix}")
     context.log.info(f"EMR Region: {region}")
 
     python_executable = shutil.which("python")
@@ -96,7 +112,7 @@ def partition_yelp_reviews(
         extras={
             "cluster_id": cluster_id,
             "job_name": job_name,
-            "s3_spark_code_path": s3_spark_code_path,
+            "s3_spark_code_path": s3_spark_code_prefix,
             "region": region,
         },
     )
