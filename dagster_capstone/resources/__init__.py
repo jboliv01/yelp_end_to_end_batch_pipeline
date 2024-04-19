@@ -11,10 +11,6 @@ dbt_resource = DbtCliResource(
     project_dir=DBT_DIRECTORY,
 )
 
-database_resource = DuckDBResource(
-        database=os.getenv("DUCKDB_DATABASE", "data/staging/data.duckdb"),
-    )
-
 if os.getenv("DAGSTER_ENVIRONMENT") == "prod":
     database_resource = DuckDBResource(
         database=os.getenv("MOTHERDUCK_DATABASE"),
