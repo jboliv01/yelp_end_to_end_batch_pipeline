@@ -111,7 +111,7 @@ def external_yelp_business(context, database: DuckDBResource):
         );
     """
 
-    if "md:yelp" in database.database:
+    if "md:?" in database.database:
         context.log.info(f"Writing to Motherduck Prod")
     else:
         context.log.info(f"Writing to local {database.database}")
@@ -138,7 +138,7 @@ def external_yelp_users(context, database: DuckDBResource):
         );
     """
 
-    if "md:yelp" in database.database:
+    if "md:?" in database.database:
         context.log.info(f"Writing to Motherduck Prod")
     else:
         context.log.info(f"Writing to local {database.database}")
@@ -166,7 +166,7 @@ def external_yelp_reviews(context, database: DuckDBResource):
         );
     """
 
-    if "md:yelp" in database.database:
+    if "md:?" in database.database:
         context.log.info(f"Writing to Motherduck Prod")
     else:
         context.log.info(f"Writing to local {database.database}")

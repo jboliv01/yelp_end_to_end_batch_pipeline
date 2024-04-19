@@ -12,7 +12,6 @@ from dagster import (
 
 )
 
-
 @asset(config_schema={"region": Field(str, default_value="us-east-2", is_required=False)}, compute_kind='spark')
 def create_emr_cluster(
     context: AssetExecutionContext, pipes_subprocess_client: PipesSubprocessClient
