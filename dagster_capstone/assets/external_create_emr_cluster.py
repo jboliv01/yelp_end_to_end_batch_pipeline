@@ -1,8 +1,9 @@
 import boto3
 from dagster_pipes import PipesContext, open_dagster_pipes
+from dagster import EnvVar
 from time import sleep
 
-def create_emr_cluster(region, context):
+def create_emr_cluster(region, s3_bucket_prefix, context):
     """
     Create an AWS EMR cluster in the specified region with predefined settings.
 
@@ -10,10 +11,13 @@ def create_emr_cluster(region, context):
     :return: The ID of the created EMR cluster.
     """
     emr_client = boto3.client('emr', region_name=region)
+    s3_bucket_prefix = EnvVar("S3_BUCKET_PREFIX")
+    bootstrap_path = f"{s3_bucket_prefix}/emr-resources/install-boto3.sh"
+    log_path = f"{s3_bucket_prefix}/emr-resources/logs/"
 
     cluster_response = emr_client.run_job_flow(
         Name="My cluster",
-        LogUri="s3://aws-logs-388058924848-us-west-2/elasticmapreduce/",
+        LogUri=log_path,
         ReleaseLabel="emr-7.0.0",
         Instances={
             'MasterInstanceType': 'm5.xlarge',
@@ -35,7 +39,7 @@ def create_emr_cluster(region, context):
             {
                 'Name': 'install boto3',
                 'ScriptBootstrapAction': {
-                    'Path': "s3://de-capstone-project/emr-resources/install-boto3.sh",
+                    'Path': bootstrap_path,
                     'Args': []
                 }
             }
@@ -66,7 +70,8 @@ def create_emr_cluster(region, context):
 def main():
     context = PipesContext.get()
     region = context.get_extra('region')
-    cluster_id = create_emr_cluster(region, context)
+    s3_bucket_prefix = context.get_extra('s3_bucket_prefix')
+    cluster_id = create_emr_cluster(region, s3_bucket_prefix, context)
 
     context.report_asset_materialization(asset_key='emr_cluster', 
                                          metadata={"cluster_id": cluster_id})

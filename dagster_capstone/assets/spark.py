@@ -9,11 +9,14 @@ from dagster import (
     file_relative_path,
     Field,
     AssetKey,
+    EnvVar
 )
 
 
 @asset(
-    config_schema={"region": Field(str, default_value="us-east-2", is_required=False)},
+    config_schema={"region": Field(str, default_value="us-east-2", is_required=False), 
+                   "s3_bucket_prefix": Field(str, default_value="s3://de-capstone-project/", is_required=False) 
+                   },
     compute_kind="spark",
     group_name="compute",
     deps=["kaggle_file"],
@@ -27,10 +30,13 @@ def emr_cluster(
     ]
 
     region = context.op_config["region"]
+    s3_bucket_prefix = context.op_config["s3_bucket_prefix"]
     context.log.info(f"EMR Region: {region}")
+    context.log.info(f"S3 Bucket Path: {s3_bucket_prefix}")
+    
 
     result = pipes_subprocess_client.run(
-        command=cmd, context=context, extras={"region": region}
+        command=cmd, context=context, extras={"region": region, "s3_bucket_prefix": s3_bucket_prefix}
     ).get_materialize_result()
 
     return result
