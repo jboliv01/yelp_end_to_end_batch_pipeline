@@ -49,7 +49,7 @@ jobs:
           pip install dbt-duckdb
           cd project-repo/analytics
           dbt deps
-          dbt parse --target prod
+          dbt parse
         shell: bash
 
       - name: Python Executable Deploy
