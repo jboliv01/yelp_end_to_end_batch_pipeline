@@ -36,10 +36,9 @@ def emr_cluster(
     s3_bucket_prefix = context.op_config["s3_bucket_prefix"]
     vpc_default_subnet_id = context.op_config["vpc_default_subnet_id"]
     region = context.op_config["region"]
-
     # overwrite test
     s3_bucket_prefix = os.getenv("S3_BUCKET_PREFIX")
-    vpc_default_subnet_id = os.getenv("DEFAULT_VPC_SUBNET_ID")
+    vpc_default_subnet_id = os.getenv("VPC_DEFAULT_SUBNET_ID")
     region = os.getenv("AWS_REGION")
     
 
