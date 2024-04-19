@@ -86,7 +86,6 @@ def partition_yelp_reviews(
     s3_spark_code_prefix = f'{s3_bucket_prefix}{os.getenv("S3_SPARK_CODE_PREFIX")}'
     region = os.getenv("AWS_REGION")
 
-
     context.log.info(f"Cluster: {cluster_id}")
     context.log.info(f"Job Name: {job_name}")
     context.log.info(f"S3 Path: {s3_spark_code_prefix}")

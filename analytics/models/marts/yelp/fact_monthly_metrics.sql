@@ -6,7 +6,7 @@ with
             count(review_id) as total_reviews,
             avg(stars) as avg_stars
         from {{ ref('stg_yelp_reviews') }}
-        group by business_id, date_trunc('month', review_month)  
+        group by business_id, date_trunc('month', review_date)
     ),
     business as (
         select *
