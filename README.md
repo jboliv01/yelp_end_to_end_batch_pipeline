@@ -195,8 +195,16 @@ So far, we have:
     pip install -e ".[dev]"
     ```
 
-2. **Run Dagster**
+ 2. **Run Dagster Cloud (Recommended)**
+
+   1. Create a Dagster+ Cloud Free Trial Account
+   2. Follow documentation [here](https://docs.dagster.io/dagster-plus/deployment/serverless#with-github) to deploy with a single click via GitHub Actions.
+   3. Set Environmental Variables under **Deployment** -> **Environmental Variables**
+
+3. **Run Dagster Locally**
     
+   Likely will fail unless you have high internet bandwidth/particullary high upload speeds as it takes a long time to ingest into the S3 bucket.
+
    Start the Dagster development environment:
     ```bash
     dagster dev
@@ -204,7 +212,7 @@ So far, we have:
 
    Visit http://localhost:3000 to access the Dagster interface.
 
-
+   
 ## Execute Pipeline Job
 
 Navigate to the **Overview** -> **Jobs** -> **yelp_etl_job** on Dagster's interface and select the **Materialize All** button. Note: Running this locally is not recommended due to the dataset size and potential AWS S3 upload times. Consider using Dagster Cloud Serverless, which offers a 30-day free trial.
