@@ -11,8 +11,8 @@ def create_emr_cluster(region, s3_bucket_prefix, context):
     """
     emr_client = boto3.client('emr', region_name=region)
     s3_bucket_prefix = s3_bucket_prefix
-    bootstrap_path = f"{s3_bucket_prefix}/emr-resources/install-boto3.sh"
-    log_path = f"{s3_bucket_prefix}/emr-resources/logs/"
+    bootstrap_path = f"{s3_bucket_prefix}emr-resources/install-boto3.sh"
+    log_path = f"{s3_bucket_prefix}emr-resources/logs/"
 
     cluster_response = emr_client.run_job_flow(
         Name="My cluster",
