@@ -197,9 +197,8 @@ MOTHERDUCK_DATABASE='md:?motherduck_token=<your_motherduck_token>'
 So far, we have:
 - Created an AWS S3 bucket.
 - Created an AWS IAM User.
-- Created a
 - Downloaded an AWS Access Key and Secret.
-- Configured necessary permissions for Spark and S3 using AWS CLI.
+- Configured required permissions for Spark and S3 using AWS CLI.
 - Uploaded Spark code to S3
 - Generated a Motherduck token.
 
