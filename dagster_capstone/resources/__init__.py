@@ -8,7 +8,7 @@ from dagster_dbt import DbtCliResource
 from ..assets.constants import DBT_DIRECTORY
 
 database_resource = DuckDBResource(
-    database=EnvVar("DUCKDB_DATABASE")
+    database=EnvVar("DUCKDB_DATABASE").get_value()
 )
 
 dbt_resource = DbtCliResource(
