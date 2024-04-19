@@ -1,6 +1,5 @@
 import boto3
 from dagster_pipes import PipesContext, open_dagster_pipes
-from dagster import EnvVar
 from time import sleep
 
 def create_emr_cluster(region, s3_bucket_prefix, context):
@@ -11,7 +10,7 @@ def create_emr_cluster(region, s3_bucket_prefix, context):
     :return: The ID of the created EMR cluster.
     """
     emr_client = boto3.client('emr', region_name=region)
-    s3_bucket_prefix = EnvVar("S3_BUCKET_PREFIX")
+    s3_bucket_prefix = s3_bucket_prefix
     bootstrap_path = f"{s3_bucket_prefix}/emr-resources/install-boto3.sh"
     log_path = f"{s3_bucket_prefix}/emr-resources/logs/"
 
@@ -24,8 +23,6 @@ def create_emr_cluster(region, s3_bucket_prefix, context):
             'SlaveInstanceType': 'm5.xlarge',
             'InstanceCount': 3,
             'Ec2SubnetId': 'subnet-6762990c', #subnet-05cc5eb5acd08207f
-            # 'EmrManagedMasterSecurityGroup': 'sg-0ff600d7a717a3608',
-            # 'EmrManagedSlaveSecurityGroup': 'sg-070547519205509be',
             'KeepJobFlowAliveWhenNoSteps': True,
             'TerminationProtected': False,  # Set to True if you need the cluster to be termination-protected
         },
