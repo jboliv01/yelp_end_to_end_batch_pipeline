@@ -15,6 +15,11 @@ env:
   ENABLE_FAST_DEPLOYS: "true"
   PYTHON_VERSION: "3.8"
   DAGSTER_CLOUD_FILE: "dagster_cloud.yaml"
+  DAGSTER_ENVIRONMENT: "prod"
+  MOTHERDUCK_TOKEN: ${{ secrets.MOTHERDUCK_TOKEN }}
+  MOTHERDUCK_DATABASE: "md:yelp"
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 jobs:
   dagster_cloud_default_deploy:
