@@ -1,7 +1,8 @@
 import boto3
 from dagster_pipes import PipesContext, open_dagster_pipes
+from time import sleep
 
-def submit_spark_job_to_emr(cluster_id, job_name, spark_script_path, region):#, s3_output_path):
+def submit_spark_job_to_emr(cluster_id, job_name, spark_script_path, region, context):#, s3_output_path):
     """
     Submit a Spark job to an AWS EMR cluster.
     :param cluster_id: The ID of the EMR cluster.
@@ -33,12 +34,27 @@ def submit_spark_job_to_emr(cluster_id, job_name, spark_script_path, region):#, 
 
     try:
         response = client.add_job_flow_steps(JobFlowId=cluster_id, Steps=[step])
-        return response['StepIds']
-    except Exception as e:
-        print(f'Error submitting job: {e}')
-        raise
-    
+        step_id = response['StepIds'][0]
+        context.log.info(f"Submitted job with step ID: {step_id}")
 
+        # Wait for the step to complete
+        while True:
+            step_status = client.describe_step(ClusterId=cluster_id, StepId=step_id)
+            state = step_status['Step']['Status']['State']
+            if state in ['COMPLETED', 'FAILED', 'CANCELLED']:
+                context.log.info(f"Step {step_id} completed with state: {state}")
+                break
+            else:
+                context.log.info(f"Step {step_id} is still running with state: {state}")
+                sleep(30)  # Check every 30 seconds
+
+        return step_id
+    
+    except Exception as e:
+        context.log.error(f'Error submitting or monitoring job step: {e}')
+        raise
+
+    
 def main():
     context = PipesContext.get()
 
@@ -49,7 +65,7 @@ def main():
 
     context.log.info(f"processing cluster_id: {cluster_id}")
     
-    step_id = submit_spark_job_to_emr(cluster_id, job_name, s3_spark_code_path, region)
+    step_id = submit_spark_job_to_emr(cluster_id, job_name, s3_spark_code_path, region, context)
     print(f'Submitted job with step ID: {step_id}')
 
     return step_id

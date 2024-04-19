@@ -17,8 +17,8 @@ dbt_resource = DbtCliResource(
 
 if os.getenv("DAGSTER_ENVIRONMENT") == "prod":
     database_resource = DuckDBResource(
-        database=EnvVar("MOTHERDUCK_DATABASE"),
-        connection_config={"motherduck_token": EnvVar("MOTHERDUCK_TOKEN")},
+        database=EnvVar("MOTHERDUCK_DATABASE").get_value(),
+        connection_config={"motherduck_token": EnvVar("MOTHERDUCK_TOKEN").get_value()},
     )
     session = boto3.Session(
         aws_access_key_id=EnvVar("AWS_ACCESS_KEY_ID"),
