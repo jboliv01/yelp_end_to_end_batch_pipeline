@@ -20,8 +20,8 @@ def create_emr_cluster(region, context):
             'SlaveInstanceType': 'm5.xlarge',
             'InstanceCount': 3,
             'Ec2SubnetId': 'subnet-6762990c', #subnet-05cc5eb5acd08207f
-            'EmrManagedMasterSecurityGroup': 'sg-0ff600d7a717a3608',
-            'EmrManagedSlaveSecurityGroup': 'sg-070547519205509be',
+            # 'EmrManagedMasterSecurityGroup': 'sg-0ff600d7a717a3608',
+            # 'EmrManagedSlaveSecurityGroup': 'sg-070547519205509be',
             'KeepJobFlowAliveWhenNoSteps': True,
             'TerminationProtected': False,  # Set to True if you need the cluster to be termination-protected
         },
