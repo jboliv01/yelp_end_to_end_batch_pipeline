@@ -1,4 +1,5 @@
 locations:
   - location_name: dagster_capstone
-    code_source: 
+    code_source:
       package_name: dagster_capstone
+    working_directory: ./project_directory
