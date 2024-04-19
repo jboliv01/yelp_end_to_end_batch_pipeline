@@ -13,7 +13,7 @@ def create_emr_cluster(region, context):
 
     cluster_response = emr_client.run_job_flow(
         Name="My cluster",
-        LogUri="s3n://aws-logs-388058924848-us-west-2/elasticmapreduce/",
+        LogUri="s3://aws-logs-388058924848-us-west-2/elasticmapreduce/",
         ReleaseLabel="emr-7.0.0",
         Instances={
             'MasterInstanceType': 'm5.xlarge',
@@ -44,7 +44,7 @@ def create_emr_cluster(region, context):
         VisibleToAllUsers=True,
         AutoScalingRole="EMR_AutoScaling_DefaultRole",  # Adjust as necessary
         ScaleDownBehavior="TERMINATE_AT_TASK_COMPLETION",
-        AutoTerminationPolicy={"IdleTimeout": 1800}
+        AutoTerminationPolicy={"IdleTimeout": 900}
     )
 
     cluster_id = cluster_response['JobFlowId']
