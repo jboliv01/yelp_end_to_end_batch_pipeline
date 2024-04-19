@@ -1,7 +1,4 @@
-# dagster_cloud.yaml
-
 locations:
-  - location_name: dagster_capstone
-    code_source:
-      package_name: dagster_capstone
-    working_directory: .
+- code_source:
+    package_name: dagster_capstone
+  location_name: dagster_capstone
