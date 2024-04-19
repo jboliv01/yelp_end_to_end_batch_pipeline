@@ -176,10 +176,15 @@ aws ec2 describe-subnets --filters "Name=vpc-id,Values=VPC_ID" --region us-east-
 
 ### Set Environmental Variables
 
-Before we can move on to executing our pipeline, be sure all of your environmental variables are properly set in your `.env` file or within the **Deployment** -> **Environmental Variables** form in your Dagster Cloud environment.
+Before we can move on to executing our pipeline, be sure all of your environmental variables are properly set within your Dagster Cloud environment (or the in your local environment via `.env`, which is not recommended).
 
-Set up the following environment variables by duplicating the `.env.example` file and renaming it to `.env`:
+The last set of credentials we need is for our Kaggle API dataset. Sign in to Kaggle and go to **Settings** -> **API** and select **Create New Token** which will provide you with a `username` and a `key` dictionary. Within Environmental Variables, set `KAGGLE_KEY` and `KAGGLE_USERNAME` to these values.
+
+Now be sure to review the following and and set each one within the **Deployments** -> **Environmental Variables** within Dagster Cloud, or locally by duplicating the `.env.example` file and renaming it to `.env`:
+
 ```shell
+KAGGLE_USERNAME='<your-username>'
+KAGGLE_KEY='<your-key>'
 DAGSTER_ENVIRONMENT='prod'
 DAGSTER_DBT_PARSE_PROJECT_ON_LOAD=1
 AWS_ACCESS_KEY_ID='<your_aws_access_key_id>'
@@ -214,9 +219,11 @@ So far, we have:
 
  2. **Run Dagster Cloud (Recommended)**
 
-   1. Create a Dagster+ Cloud Free Trial Account and Sign in to add your code location by connecting your GitHub account.
+   1. Create a Dagster+ Cloud Free Trial Account and sign in.
    2. Follow documentation [here](https://docs.dagster.io/dagster-plus/deployment/serverless#with-github) to deploy with a single click via GitHub Actions.
-   3. Set Environmental Variables under **Deployment** -> **Environmental Variables**
+   3. Set Environmental Variables under **Deployment** -> **Environmental Variables**.
+   4. Publish your repo to Github.
+   5. Add your Code Location by navigating to Dagster+ and connecting your GitHub account.
 
 3. **Run Dagster Locally**
     
