@@ -137,7 +137,7 @@ Within the project repo, open up a terminal and run the following commands:
 
 #### Step 1: Log into Motherduck
 
-1. **Visit the Motherduck website**.
+1. **Visit the Motherduck website [here](https://motherduck.com/)**.
 2. **Create an account and log in**
 
 #### Step 2: Retrieve the Token
@@ -179,6 +179,7 @@ MOTHERDUCK_TOKEN='<your_motherduck_token>'
 So far, we have:
 - Created an AWS S3 bucket.
 - Created an AWS IAM User.
+- Created a
 - Downloaded an AWS Access Key and Secret.
 - Configured necessary permissions for Spark and S3 using AWS CLI.
 - Uploaded Spark code to S3
