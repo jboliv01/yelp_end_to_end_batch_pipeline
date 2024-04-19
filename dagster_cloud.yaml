@@ -1,5 +1,5 @@
 locations:
-  - location_name: dagster_capstone
+  - location_name: data-eng-pipeline
     code_source:
       module_name: dagster_capstone
-    working_directory: ./project_directory
+    # working_directory: ./project_directory
