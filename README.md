@@ -229,7 +229,7 @@ streamlit run capstone.py
 
 ![dashboard](screenshots/dashboard.png)
 
-## Additional Resources
+## Additional Resources 
 
 - [Using Dagster with Spark](https://docs.dagster.io/integrations/spark#asset-accepts-and-produces-dataframes-or-rdds)
 - [emr_pyspark_launcher](https://github.com/dagster-io/dagster/blob/master/python_modules/libraries/dagster-aws/dagster_aws/emr/pyspark_step_launcher.py)
