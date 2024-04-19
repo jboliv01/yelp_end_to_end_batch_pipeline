@@ -1,0 +1,1 @@
+select * from stg_yelp_business;

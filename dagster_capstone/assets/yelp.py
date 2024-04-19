@@ -151,6 +151,7 @@ def external_yelp_reviews(context, database: DuckDBResource):
             user_id,
             stars,
             datetime,
+            date,
             text
             from READ_PARQUET('{constants.YELP_REVIEWS_DATA_FILE_PATH}')
         );

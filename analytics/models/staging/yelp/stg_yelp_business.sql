@@ -13,5 +13,5 @@ select
     review_count,
     stars,
     is_open,
-    categories
+    categoriesA
 from raw_bus

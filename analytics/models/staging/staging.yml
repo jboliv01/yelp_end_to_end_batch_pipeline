@@ -68,3 +68,31 @@ models:
             description: number of reviews a user has made
           - name: yelping_since
             description: date a user started yelping
+      - name: stg_yelp_reviews
+        description: "Transformed data from external Yelp reviews"
+        columns:
+          - name: business_id
+            description: "Unique identifier for businesses"
+            tests:
+              - not_null
+          - name: review_id
+            description: "Primary key. Unique identifier for reviews."
+            tests:
+              - not_null
+              - unique
+          - name: user_id
+            description: "Identifier for the users who made the reviews"
+            tests:
+              - not_null
+          - name: stars
+            description: "Rating given by the user"
+            tests:
+              - not_null
+              - accepted_values:
+                  values: [1, 2, 3, 4, 5]
+          - name: datetime
+            description: "Datetime when the review was posted"
+            tests:
+              - not_null
+          - name: text
+            description: "Text content of the review"

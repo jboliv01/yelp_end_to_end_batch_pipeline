@@ -1,0 +1,1 @@
+select * from dim_yelp_business_categories;

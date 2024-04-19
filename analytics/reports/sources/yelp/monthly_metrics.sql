@@ -1,0 +1,1 @@
+select * from fact_monthly_metrics;
