@@ -1,5 +1,7 @@
-locations:
-  - location_name: yelp-e2e-capstone
-    code_source:
-      package_name: dagster_capstone
-    working_directory: ./dagster_codespaces
+yaml
+# dagster_cloud.yaml
+
+code_locations:
+  - name: dagster_capstone
+    repository:
+      module_name: "dagster_capstone"
