@@ -7,18 +7,17 @@ from dagster_dbt import DbtCliResource
 
 from ..assets.constants import DBT_DIRECTORY
 
-database_resource = DuckDBResource(
-    database=EnvVar("DUCKDB_DATABASE")
-)
-
 dbt_resource = DbtCliResource(
     project_dir=DBT_DIRECTORY,
 )
 
 if os.getenv("DAGSTER_ENVIRONMENT") == "prod":
+    # database_resource = DuckDBResource(
+    #     database=EnvVar("MOTHERDUCK_DATABASE"),
+    #     connection_config={"motherduck_token": EnvVar("MOTHERDUCK_TOKEN").get_value()},
+    # )
     database_resource = DuckDBResource(
         database=EnvVar("MOTHERDUCK_DATABASE"),
-        connection_config={"motherduck_token": EnvVar("MOTHERDUCK_TOKEN")},
     )
     session = boto3.Session(
         aws_access_key_id=EnvVar("AWS_ACCESS_KEY_ID"),
@@ -29,7 +28,7 @@ if os.getenv("DAGSTER_ENVIRONMENT") == "prod":
 else:
     smart_open_config = {}
     database_resource = DuckDBResource(
-        database=EnvVar("DUCKDB_DATABASE"),
+        database=os.getenv("DUCKDB_DATABASE", "data/staging/data.duckdb"),
     )
 
 
