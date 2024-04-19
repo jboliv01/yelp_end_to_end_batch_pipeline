@@ -15,7 +15,7 @@ from dagster import (
 
 @asset(
     config_schema={"region": Field(str, default_value="us-east-2", is_required=False), 
-                   "s3_bucket_prefix": Field(str, default_value="s3://de-capstone-project/", is_required=False) 
+                   "s3_bucket_prefix": Field(str, default_value="s3://de-capstone-project/", is_required=False),
                    },
     compute_kind="spark",
     group_name="compute",
@@ -31,12 +31,14 @@ def emr_cluster(
 
     region = context.op_config["region"]
     s3_bucket_prefix = context.op_config["s3_bucket_prefix"]
+    vpc_default_subnet_id = EnvVar("VPC_DEFAULT_SUBNET_ID")
     context.log.info(f"EMR Region: {region}")
     context.log.info(f"S3 Bucket Path: {s3_bucket_prefix}")
+    context.log.info(f"Default VPC Subnet ID: {vpc_default_subnet_id}")
     
 
     result = pipes_subprocess_client.run(
-        command=cmd, context=context, extras={"region": region, "s3_bucket_prefix": s3_bucket_prefix}
+        command=cmd, context=context, extras={"region": region, "s3_bucket_prefix": s3_bucket_prefix, "vpc_default_subnet_id": vpc_default_subnet_id}
     ).get_materialize_result()
 
     return result

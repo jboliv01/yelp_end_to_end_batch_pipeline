@@ -2,7 +2,7 @@ import boto3
 from dagster_pipes import PipesContext, open_dagster_pipes
 from time import sleep
 
-def create_emr_cluster(region, s3_bucket_prefix, context):
+def create_emr_cluster(region, s3_bucket_prefix, vpc_default_subnet_id, context):
     """
     Create an AWS EMR cluster in the specified region with predefined settings.
 
@@ -14,6 +14,7 @@ def create_emr_cluster(region, s3_bucket_prefix, context):
     bootstrap_path = f"{s3_bucket_prefix}emr-resources/install-boto3.sh"
     log_path = f"{s3_bucket_prefix}emr-resources/logs/"
 
+
     cluster_response = emr_client.run_job_flow(
         Name="My cluster",
         LogUri=log_path,
@@ -22,7 +23,7 @@ def create_emr_cluster(region, s3_bucket_prefix, context):
             'MasterInstanceType': 'm5.xlarge',
             'SlaveInstanceType': 'm5.xlarge',
             'InstanceCount': 3,
-            'Ec2SubnetId': 'subnet-6762990c', #subnet-05cc5eb5acd08207f
+            'Ec2SubnetId': vpc_default_subnet_id, #subnet-05cc5eb5acd08207f
             'KeepJobFlowAliveWhenNoSteps': True,
             'TerminationProtected': False,  # Set to True if you need the cluster to be termination-protected
         },
@@ -68,7 +69,8 @@ def main():
     context = PipesContext.get()
     region = context.get_extra('region')
     s3_bucket_prefix = context.get_extra('s3_bucket_prefix')
-    cluster_id = create_emr_cluster(region, s3_bucket_prefix, context)
+    vpc_default_subnet_id = context.get_extra('vpc_default_subnet_id')
+    cluster_id = create_emr_cluster(region, s3_bucket_prefix, vpc_default_subnet_id, context)
 
     context.report_asset_materialization(asset_key='emr_cluster', 
                                          metadata={"cluster_id": cluster_id})
