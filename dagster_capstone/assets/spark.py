@@ -13,7 +13,7 @@ from dagster import (
 
 
 @asset(
-    config_schema={"region": Field(str, default_value="us-west-2", is_required=False)},
+    config_schema={"region": Field(str, default_value="us-east-2", is_required=False)},
     compute_kind="spark",
     group_name="compute",
     deps=["kaggle_file"],
@@ -27,6 +27,7 @@ def emr_cluster(
     ]
 
     region = context.op_config["region"]
+    context.log.info(f"EMR Region: {region}")
 
     result = pipes_subprocess_client.run(
         command=cmd, context=context, extras={"region": region}
@@ -41,7 +42,7 @@ def emr_cluster(
             str,
             default_value="s3://de-capstone-project/emr-resources/spark-code/emr_spark_yelp_reviews.py",
         ),
-        "region": Field(str, default_value="us-west-2"),
+        "region": Field(str, default_value="us-east-2"),
     },
     compute_kind="spark",
     group_name="ingested",

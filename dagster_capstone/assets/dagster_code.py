@@ -23,6 +23,7 @@ def create_emr_cluster(
     ]
 
     region = context.op_config["region"]
+    context.log.info(f"EMR Region: {region}")
 
     result = pipes_subprocess_client.run(
         command=cmd, context=context, extras={"region": region}
