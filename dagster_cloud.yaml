@@ -1,6 +1,6 @@
 # dagster_cloud.yaml
 
-code_locations:
+locations:
   - name: dagster_capstone
     repository:
       module_name: "dagster_capstone"
