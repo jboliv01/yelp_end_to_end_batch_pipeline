@@ -10,7 +10,6 @@ def create_emr_cluster(region, s3_bucket_prefix, vpc_default_subnet_id, context)
     :return: The ID of the created EMR cluster.
     """
     emr_client = boto3.client('emr', region_name=region)
-    s3_bucket_prefix = s3_bucket_prefix
     bootstrap_path = f"{s3_bucket_prefix}emr-resources/install-boto3.sh"
     log_path = f"{s3_bucket_prefix}emr-resources/logs/"
 
