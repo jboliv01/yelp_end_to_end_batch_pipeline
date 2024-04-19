@@ -13,7 +13,7 @@ from dagster import (
 )
 
 
-@asset(config_schema={"region": Field(str, default_value="us-west-2", is_required=False)}, compute_kind='spark')
+@asset(config_schema={"region": Field(str, default_value="us-east-2", is_required=False)}, compute_kind='spark')
 def create_emr_cluster(
     context: AssetExecutionContext, pipes_subprocess_client: PipesSubprocessClient
     ):
@@ -32,7 +32,7 @@ def create_emr_cluster(
 
 @asset(config_schema={"job_name": Field(str, default_value="YelpReviews"),
         "s3_spark_code_path": Field(str, default_value="s3://de-capstone-project/emr-resources/spark-code/emr_spark_yelp_reviews.py"),
-        "region": Field(str, default_value="us-west-2"),
+        "region": Field(str, default_value="us-east-2"),
       },
     compute_kind='spark',
     deps=['create_emr_cluster']
