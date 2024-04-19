@@ -16,6 +16,7 @@ from dagster import (
 @asset(
     config_schema={"region": Field(str, default_value="us-east-2", is_required=False), 
                    "s3_bucket_prefix": Field(str, default_value="s3://de-capstone-project/", is_required=False),
+                   "vpc_default_subnet_id": Field(str, default_value="subnet-6762990c")
                    },
     compute_kind="spark",
     group_name="compute",
@@ -30,9 +31,8 @@ def emr_cluster(
     ]
 
     region = context.op_config["region"]
-    # s3_bucket_prefix = context.op_config["s3_bucket_prefix"]
-    s3_bucket_prefix = EnvVar("S3_BUCKET_PREFIX")
-    vpc_default_subnet_id = EnvVar("VPC_DEFAULT_SUBNET_ID")
+    s3_bucket_prefix = context.op_config["s3_bucket_prefix"]
+    vpc_default_subnet_id = context.op_config["vpc_default_subnet_id"]
     context.log.info(f"EMR Region: {region}")
     context.log.info(f"S3 Bucket Path: {s3_bucket_prefix}")
     context.log.info(f"Default VPC Subnet ID: {vpc_default_subnet_id}")
@@ -51,6 +51,7 @@ def emr_cluster(
             str,
             default_value="emr-resources/spark-code/emr_spark_yelp_reviews.py",
         ),
+        "s3_bucket_prefix": Field(str, default_value='s3://de-capstone-project/', is_required=True),
         "region": Field(str, default_value="us-east-2"),
     },
     compute_kind="spark",
@@ -69,7 +70,7 @@ def partition_yelp_reviews(
 
     cluster_id = materialization.metadata["cluster_id"].value
     job_name = "YelpReviews"
-    s3_bucket_prefix = EnvVar("S3_BUCKET_PREFIX")
+    s3_bucket_prefix = context.op_config['s3_bucket_prefix']
     s3_spark_code_path = f'{s3_bucket_prefix}{context.op_config["s3_spark_code_path"]}'
     region = context.op_config["region"]
 

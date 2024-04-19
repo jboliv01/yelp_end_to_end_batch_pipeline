@@ -82,7 +82,7 @@ Within the project repo, open up a terminal and run the following commands:
 
 5. **Download the Credentials:**
    
-   On the final screen, you’ll have the opportunity to download the `.csv` file containing the new user's Access Key ID and Secret Access Key. Make sure to download this file and copy the credentials over to the `.env` file in our project.
+   On the final screen, you’ll have the opportunity to download the `.csv` file containing the new user's `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. Make sure to download this file and copy these two credentials over to the `.env` file in our project.
 
 
 ### Step 2: AWS EMR Permissions Setup
@@ -133,6 +133,21 @@ Within the project repo, open up a terminal and run the following commands:
     aws iam get-role --role-name MyDagsterEMRServiceRole
     ```
 
+### Step 3: Retrieve the Subnet ID of your Default VPC in AWS Region us-east-2
+
+1. Fetch the Default VPC
+
+```shell
+aws ec2 describe-vpcs --filters Name=is-default,Values=true --region us-east-2 --query "Vpcs[].VpcId" --output text
+```
+
+3. Input your `VPC_ID` returned from the previous command into the command below to fetch the list of your Default VPC Subnets and select one and set the `VPC_DEFAULT_SUBNET_ID` env variable to its value.
+
+```shell
+aws ec2 describe-subnets --filters "Name=vpc-id,Values=VPC_ID" --region us-east-2 --query "Subnets[*].[SubnetId, CidrBlock, AvailabilityZone]" --output table
+```
+
+
 ### Configure Motherduck Settings
 
 #### Step 1: Log into Motherduck
@@ -143,8 +158,9 @@ Within the project repo, open up a terminal and run the following commands:
 #### Step 2: Retrieve the Token
 
 1. Once logged in, navigate to your **account settings** or **developer settings** section.
-2. Under **Settings** -> **General** copy your account token under **Service Token** and paste it into our `.env` file as the `MOTHERDUCK_TOKEN` value.
-3. Under **Settings** -> **Secrets** add your newly created Amazon S3 Secret.
+2. Under **Settings** -> **General** copy your account token under **Service Token** and paste it into our `.env` file as the `MOTHERDUCK_DATABASE` value. The value should look something like
+`MOTHERDUCK_DATABASE='md:?motherduck_token=<your-token>'
+3. Under **Settings** -> **Secrets** add your newly created `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_REGION` so Motherduck can authenticate to S3.
 
 ### Upload Spark Code to S3 ###
 
