@@ -54,7 +54,6 @@ def submit_spark_job_to_emr(cluster_id, job_name, spark_script_path, region, con
         context.log.error(f'Error submitting or monitoring job step: {e}')
         raise
 
-    
 def main():
     context = PipesContext.get()
 

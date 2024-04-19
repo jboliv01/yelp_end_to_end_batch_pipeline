@@ -21,8 +21,8 @@ if os.getenv("DAGSTER_ENVIRONMENT") == "prod":
         connection_config={"motherduck_token": EnvVar("MOTHERDUCK_TOKEN").get_value()},
     )
     session = boto3.Session(
-        aws_access_key_id=EnvVar("AWS_ACCESS_KEY_ID"),
-        aws_secret_access_key=EnvVar("AWS_SECRET_ACCESS_KEY"),
+        aws_access_key_id=EnvVar("AWS_ACCESS_KEY_ID").get_value(),
+        aws_secret_access_key=EnvVar("AWS_SECRET_ACCESS_KEY").get_value(),
         region_name=EnvVar("AWS_REGION").get_value(),
     )
     smart_open_config = {"client": session.client("s3")}
