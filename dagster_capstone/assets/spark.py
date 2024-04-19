@@ -51,7 +51,7 @@ def emr_cluster(
             str,
             default_value="emr-resources/spark-code/emr_spark_yelp_reviews.py",
         ),
-        "s3_bucket_prefix": Field(str, default_value='s3://de-capstone-project/', is_required=True),
+        "s3_bucket_prefix": Field(str, default_value='s3://de-capstone-project/', is_required=False),
         "region": Field(str, default_value="us-east-2"),
     },
     compute_kind="spark",
