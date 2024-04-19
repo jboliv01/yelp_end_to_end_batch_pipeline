@@ -30,7 +30,8 @@ def emr_cluster(
     ]
 
     region = context.op_config["region"]
-    s3_bucket_prefix = context.op_config["s3_bucket_prefix"]
+    # s3_bucket_prefix = context.op_config["s3_bucket_prefix"]
+    s3_bucket_prefix = EnvVar("S3_BUCKET_PREFIX")
     vpc_default_subnet_id = EnvVar("VPC_DEFAULT_SUBNET_ID")
     context.log.info(f"EMR Region: {region}")
     context.log.info(f"S3 Bucket Path: {s3_bucket_prefix}")
@@ -48,7 +49,7 @@ def emr_cluster(
     config_schema={
         "s3_spark_code_path": Field(
             str,
-            default_value="s3://de-capstone-project/emr-resources/spark-code/emr_spark_yelp_reviews.py",
+            default_value="emr-resources/spark-code/emr_spark_yelp_reviews.py",
         ),
         "region": Field(str, default_value="us-east-2"),
     },
@@ -68,7 +69,8 @@ def partition_yelp_reviews(
 
     cluster_id = materialization.metadata["cluster_id"].value
     job_name = "YelpReviews"
-    s3_spark_code_path = context.op_config["s3_spark_code_path"]
+    s3_bucket_prefix = EnvVar("S3_BUCKET_PREFIX")
+    s3_spark_code_path = f"{s3_bucket_prefix}{context.op_config["s3_spark_code_path"]}"
     region = context.op_config["region"]
 
     context.log.info(f"Cluster: {cluster_id}")
