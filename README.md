@@ -16,7 +16,7 @@ The project aims to create a dashboard with two tiles by:
 ## Data Pipeline
 
 The project employs a **batch processing** method using Apache Spark to handle large datasets efficiently:
-- **Batch**: The pipeline processes data periodically from a static dataset downloaded from Kaggle, consisting of multiple JSON files.
+- **Batch**: The pipeline processes data from a static dataset downloaded from the Kaggle API, consisting of multiple JSON files.
 
 ![pipeline-dag](screenshots/dagster.png)
 
