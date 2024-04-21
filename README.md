@@ -10,21 +10,33 @@ The project aims to create a dashboard with two tiles by:
 - Selecting a dataset of Yelp business reviews.
 - Creating a pipeline for processing this dataset and storing it in a data lake.
 - Moving the data from the lake to a data warehouse.
-- Transforming the data in the data warehouse to prepare it for visualization.
-   - dbt Models
-      - [Staging](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/tree/main/analytics/models/staging/yelp)
-      - [Fact](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/tree/main/analytics/models/marts/yelp)
-   - Apache Spark
-      - [Spark Asset](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/blob/main/dagster_capstone/assets/spark.py)
-      - [EMR Cluster Creation](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/blob/main/dagster_capstone/assets/external_create_emr_cluster.py)
-      - [Spark Job Execution](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/blob/main/dagster_capstone/assets/external_run_spark_job.py)
-      - [Spark Code (Code being executed on the cluster)](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/tree/main/emr-resources/spark-code)     
+- Transforming the data in the data warehouse to prepare it for visualization.  
 - Building a dashboard to display insights from the data effectively.
 
 ## Data Pipeline
 
 The project employs a **batch processing** method using Apache Spark to handle large datasets efficiently:
 - **Batch**: The pipeline processes data from a static dataset downloaded from the Kaggle API, consisting of multiple JSON files.
+
+The pipeline is composed of multiple Dagster assets, each performing specific tasks.
+
+Pipeline Assets:
+- `kaggle_file`: downloads and unzips the Yelp dataset from the Kaggle API and uploads it to AWS S3. This dataset consists of 5 json datasets that are ~8GB total in size.
+- **Apache Spark**
+   - `emr_cluster`: this asset defines logic for orchestrating the creation of an AWS EMR Cluster, which is a cluster of EC2 instances that will run our PySpark code (Similar to Google's Dataproc)
+   - `partition_yelp_reviews`: this asset submits our spark job to the cluster created in the `upstream emr_cluster` asset. The spark code is defined [here](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/blob/main/emr-resources/spark-code/emr_spark_yelp_reviews.py). I implemented Spark here due to the size of the `yelp_academic_dataset_business.json` being roughly ~5GB in size. Loading this into memory and using Pandas to perform transformations was not practical in this scenario as it is memory intensive and would often crash my data orchestration tool.
+      - [Spark Asset](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/blob/main/dagster_capstone/assets/spark.py)
+      - [EMR Cluster Creation](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/blob/main/dagster_capstone/assets/external_create_emr_cluster.py)
+      - [Spark Job Execution](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/blob/main/dagster_capstone/assets/external_run_spark_job.py)
+      - [Spark Code (Code being executed on the cluster)](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/tree/main/emr-resources/spark-code)
+- **DuckDB**
+   - `external_yelp_reviews`, `external_yelp_users`, `external_yelp_business`: these assets all use DuckDB to load and ingest our data sources into Motherduck DWH as external tables.
+- **dbt**
+- `staging_yelp_reviews`, `staging_yelp_users`, `staging_yelp_business`: these assets utilize dbt to create our staging models
+- Models
+   - [Staging](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/tree/main/analytics/models/staging/yelp)
+   - [Fact](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/tree/main/analytics/models/marts/yelp)
+ 
 
 ![pipeline-dag](screenshots/dagster.png)
 
