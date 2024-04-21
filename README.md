@@ -37,16 +37,20 @@ The dashboard is implemented using Streamlit to visualize data from Motherduck:
 
 ## Setup and Configuration
 
-
-### Install Python 3.10 and AWS CLI
+### Install Dependencies
 
 1. **Install Python 3.10**:
    - Download and install Python 3.10 from the [official Python website](https://www.python.org/downloads/).
 
 2. **Install AWS CLI**:
    - Follow the instructions provided in the [AWS CLI documentation](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) to install AWS CLI for your operating system.
-
-
+  
+3. **Install Streamlit**
+   - Run the following command to install [Streamlit](https://streamlit.io/#install)
+     ```shell
+     pip install streamlit
+     streamlit hello
+     ```
 
 ### **Create a Virtual Environment**
 Within the project repo, open up a terminal and run the following commands: 
