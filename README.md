@@ -43,6 +43,8 @@ The dashboard is implemented using Streamlit to visualize data from Motherduck:
 - **Graph 1**: Shows the distribution of Yelp reviews across different categories.
 - **Graph 2**: Tracks average review scores over time, highlighting trends and outliers.
 
+![dashboard](screenshots/dashboard.png)
+
 ## Setup and Configuration
 
 Before doing anything else, be sure to clone this repo to your local computer.
