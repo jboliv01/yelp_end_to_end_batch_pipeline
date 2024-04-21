@@ -31,11 +31,12 @@ The project employs a **batch processing** method using Apache Spark to handle l
 
 ## Technologies
 
-- **Cloud**: AWS services are used for hosting and processing the data.
+- **Cloud**: AWS S3 services are used for hosting and processing the data.
 - **Workflow orchestration**: Dagster manages the workflow, coordinating tasks such as Spark job execution and data transformation.
 - **Data Warehouse**: Motherduck, a serverless SQL platform, is used for querying and managing data.
 - **Batch processing**: Apache Spark processes the JSON files in the AWS EMR cluster.
 - **Transformations**: dbt models the data within Motherduck, optimizing it for analysis and dashboarding.
+- **Visualization**: Streamlit is used for data visualization.
 
 ## Dashboard
 
