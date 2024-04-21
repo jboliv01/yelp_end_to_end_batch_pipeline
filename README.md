@@ -37,6 +37,8 @@ The dashboard is implemented using Streamlit to visualize data from Motherduck:
 
 ## Setup and Configuration
 
+Before doing anything else, be sure to clone this repo to your local computer.
+
 ### Install Dependencies
 
 1. **Install Python 3.10**:
@@ -45,7 +47,13 @@ The dashboard is implemented using Streamlit to visualize data from Motherduck:
 2. **Install AWS CLI**:
    - Follow the instructions provided in the [AWS CLI documentation](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) to install AWS CLI for your operating system.
   
-3. **Install Streamlit**
+3. **Install Dagster**
+   - Install our Dagster code location as a Python package:
+    ```shell
+    pip install -e ".[dev]"
+    ```
+    
+4. **Install Streamlit**
    - Run the following command to install [Streamlit](https://streamlit.io/#install)
      ```shell
      pip install streamlit
@@ -212,16 +220,9 @@ So far, we have:
 - Generated a Motherduck token.
 
 
-### Dagster Setup
+### Run Dagster
 
-1. **Install Dagster**
-
-   Install our Dagster code location as a Python package:
-    ```bash
-    pip install -e ".[dev]"
-    ```
-
- 2. **Run Dagster Cloud (Recommended)**
+#### **Run Dagster Cloud (Recommended)**
 
    1. Create a Dagster+ Cloud Free Trial Account and sign in.
    2. Follow documentation [here](https://docs.dagster.io/dagster-plus/deployment/serverless#with-github) to deploy with a single click via GitHub Actions.
@@ -229,7 +230,9 @@ So far, we have:
    4. Publish your repo to Github.
    5. Add your Code Location by navigating to Dagster+ and connecting your GitHub account.
 
-3. **Run Dagster Locally**
+**OR**
+
+#### **Run Dagster Locally**
     
    Likely will fail unless you have high internet bandwidth/particullary high upload speeds as it takes a long time to ingest into the S3 bucket.
 
