@@ -11,6 +11,14 @@ The project aims to create a dashboard with two tiles by:
 - Creating a pipeline for processing this dataset and storing it in a data lake.
 - Moving the data from the lake to a data warehouse.
 - Transforming the data in the data warehouse to prepare it for visualization.
+   - dbt Models
+      - [Staging](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/tree/main/analytics/models/staging/yelp)
+      - [Fact](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/tree/main/analytics/models/marts/yelp)
+   - Apache Spark
+      - [Spark Asset](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/blob/main/dagster_capstone/assets/spark.py)
+      - [EMR Cluster Creation](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/blob/main/dagster_capstone/assets/external_create_emr_cluster.py)
+      - [Spark Job Execution](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/blob/main/dagster_capstone/assets/external_run_spark_job.py)
+      - [Spark Code (Code being executed on the cluster)](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/tree/main/emr-resources/spark-code)     
 - Building a dashboard to display insights from the data effectively.
 
 ## Data Pipeline
