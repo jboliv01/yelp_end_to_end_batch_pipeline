@@ -8,7 +8,7 @@ from dagster_aws.s3 import S3Resource
 
 from .assets import kaggle, spark, yelp, dbt, trips
 from .resources import database_resource, dbt_resource 
-from .jobs import trip_update_job
+from .jobs import yelp_etl_job
 from .schedules import trip_update_schedule
 
 trip_assets = load_assets_from_modules([trips])
@@ -19,7 +19,7 @@ dbt_analytics_assets = load_assets_from_modules(modules=[dbt])
 # metric_assets = load_assets_from_modules([metrics])
 # request_assets = load_assets_from_modules([requests])
 
-all_jobs = [trip_update_job]
+all_jobs = [yelp_etl_job]
 all_schedules = [trip_update_schedule]
 # all_sensors = [adhoc_request_sensor]
 
