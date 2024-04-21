@@ -28,7 +28,7 @@ This project aims to extract Yelp data pertaining to business data, business rev
 The project employs a **batch processing** method using Apache Spark to handle large datasets efficiently:
 - **Batch**: The pipeline processes data from a static dataset downloaded from the Kaggle API, consisting of multiple JSON files.
 
-The pipeline is composed of multiple Dagster Software Defined Assets (SDAs), which compose the DAG visual below.
+The pipeline is composed of multiple Dagster Software Defined Assets (SDAs), which are displayed in the DAG visual below.
 
 ### Pipeline Assets:
 - [**Kaggle**](dagster_capstone/assets/kaggle.py)
