@@ -9,7 +9,7 @@ adhoc_request = AssetSelection.keys("adhoc_request")
 
 dbt_trips_selection = build_dbt_asset_selection([dbt_analytics], "stg_trips").downstream()
 
-trip_update_job = define_asset_job(
+yelp_etl_job = define_asset_job(
     name="yelp_etl_job",
     partitions_def=monthly_partition,
     selection=AssetSelection.all(),
