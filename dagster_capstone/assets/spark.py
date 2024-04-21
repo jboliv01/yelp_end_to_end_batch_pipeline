@@ -32,10 +32,6 @@ def emr_cluster(
         file_relative_path(__file__, "external_create_emr_cluster.py"),
     ]
 
-    # s3_bucket_prefix = context.op_config["s3_bucket_prefix"]
-    # vpc_default_subnet_id = context.op_config["vpc_default_subnet_id"]
-    # region = context.op_config["region"]
-
     s3_bucket_prefix = os.getenv("S3_BUCKET_PREFIX")
     vpc_default_subnet_id = os.getenv("VPC_DEFAULT_SUBNET_ID")
     region = os.getenv("AWS_REGION")
@@ -77,11 +73,7 @@ def partition_yelp_reviews(
 
     cluster_id = materialization.metadata["cluster_id"].value
     job_name = "YelpReviews"
-
-    # s3_bucket_prefix = context.op_config['s3_bucket_prefix']
-    # s3_spark_code_prefix = f'{s3_bucket_prefix}{context.op_config["s3_spark_code_prefix"]}'
-    # region = context.op_config["region"]
-
+    
     s3_bucket_prefix = os.getenv("S3_BUCKET_PREFIX")
     s3_spark_code_prefix = f'{s3_bucket_prefix}{os.getenv("S3_SPARK_CODE_PREFIX")}'
     region = os.getenv("AWS_REGION")
