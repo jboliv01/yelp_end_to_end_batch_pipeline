@@ -1,9 +1,5 @@
 # Yelp Data Insights Dashboard
 
-## Objective
-
-The goal of this project is to apply the knowledge and skills learned throughout the data engineering course to construct an end-to-end data pipeline that processes a large dataset and visualizes key business metrics.
-
 ## Problem Statement
 
 The project aims to create a dashboard with two tiles by:
@@ -12,6 +8,16 @@ The project aims to create a dashboard with two tiles by:
 - Moving the data from the lake to a data warehouse.
 - Transforming the data in the data warehouse to prepare it for visualization.  
 - Building a dashboard to display insights from the data effectively.
+
+## Technologies
+
+- **Cloud**: AWS S3 services are used for hosting and processing the data.
+- **Workflow orchestration**: Dagster manages the workflow, coordinating tasks such as Spark job execution and data transformation.
+- **Data Warehouse**: Motherduck, a serverless SQL platform, is used for querying and managing data.
+- **Batch processing**: Apache Spark processes the JSON files in the AWS EMR cluster.
+- **Transformations**: dbt models the data within Motherduck, optimizing it for analysis and dashboarding.
+- **Visualization**: Streamlit is used for data visualization.
+
 
 ## Data Pipeline
 
@@ -40,15 +46,6 @@ The pipeline is composed of multiple Dagster Software Defined Assets (SDAs), whi
    
 ![pipeline-dag](screenshots/dagster.png)
 
-
-## Technologies
-
-- **Cloud**: AWS S3 services are used for hosting and processing the data.
-- **Workflow orchestration**: Dagster manages the workflow, coordinating tasks such as Spark job execution and data transformation.
-- **Data Warehouse**: Motherduck, a serverless SQL platform, is used for querying and managing data.
-- **Batch processing**: Apache Spark processes the JSON files in the AWS EMR cluster.
-- **Transformations**: dbt models the data within Motherduck, optimizing it for analysis and dashboarding.
-- **Visualization**: Streamlit is used for data visualization.
 
 ## Dashboard
 

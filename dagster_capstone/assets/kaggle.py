@@ -10,7 +10,6 @@ from dagster import asset, IOManager, io_manager, Field
 
 class KaggleFileManager(IOManager):
     def handle_output(self, context, obj):
-        # obj here would be the local file path to the downloaded dataset
         s3 = boto3.client('s3')
         bucket_name = context.resource_config['s3_bucket']
         s3_key_prefix = context.resource_config.get('s3_key_prefix', '')
