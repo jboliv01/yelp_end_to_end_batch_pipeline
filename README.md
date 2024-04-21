@@ -18,26 +18,26 @@ The project aims to create a dashboard with two tiles by:
 The project employs a **batch processing** method using Apache Spark to handle large datasets efficiently:
 - **Batch**: The pipeline processes data from a static dataset downloaded from the Kaggle API, consisting of multiple JSON files.
 
-The pipeline is composed of multiple Dagster assets, each performing specific tasks.
+The pipeline is composed of multiple Dagster Software Defined Assets (SDAs), which compose the DAG visual below.
 
-Pipeline Assets:
-- `kaggle_file`: downloads and unzips the Yelp dataset from the Kaggle API and uploads it to AWS S3. This dataset consists of 5 json datasets that are ~8GB total in size.
-- **Apache Spark**
-   - `emr_cluster`: this asset defines logic for orchestrating the creation of an AWS EMR Cluster, which is a cluster of EC2 instances that will run our PySpark code (Similar to Google's Dataproc)
-   - `partition_yelp_reviews`: this asset submits our spark job to the cluster created in the `upstream emr_cluster` asset. The spark code is defined [here](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/blob/main/emr-resources/spark-code/emr_spark_yelp_reviews.py). I implemented Spark here due to the size of the `yelp_academic_dataset_business.json` being roughly ~5GB in size. Loading this into memory and using Pandas to perform transformations was not practical in this scenario as it is memory intensive and would often crash my data orchestration tool.
-      - [Spark Asset](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/blob/main/dagster_capstone/assets/spark.py)
-      - [EMR Cluster Creation](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/blob/main/dagster_capstone/assets/external_create_emr_cluster.py)
-      - [Spark Job Execution](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/blob/main/dagster_capstone/assets/external_run_spark_job.py)
-      - [Spark Code (Code being executed on the cluster)](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/tree/main/emr-resources/spark-code)
-- **DuckDB**
-   - `external_yelp_reviews`, `external_yelp_users`, `external_yelp_business`: these assets all use DuckDB to load and ingest our data sources into Motherduck DWH as external tables.
-- **dbt**
-- `staging_yelp_reviews`, `staging_yelp_users`, `staging_yelp_business`: these assets utilize dbt to create our staging models
-- Models
-   - [Staging](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/tree/main/analytics/models/staging/yelp)
-   - [Fact](https://github.com/jboliv01/yelp_end_to_end_batch_pipeline/tree/main/analytics/models/marts/yelp)
- 
+### Pipeline Assets:
+- [**Kaggle**](dagster_capstone/assets/kaggle.py)
+   - `kaggle_file`: downloads and unzips the Yelp dataset from the Kaggle API and uploads it to AWS S3. This dataset consists of 5 json datasets that are ~8GB total in size.
+- [**Apache Spark**](dagster_capstone/assets/spark.py) The following asset module defines two dagster assets:
+   1. [`emr_cluster`](dagster_capstone/assets/external_create_emr_cluster.py): This asset defines logic for orchestrating external python code, which Dagster refers to as Dagster Pipes. More specifically, the emr_cluster asset executes the `external_create_emr_cluster.py` script which handles the creation of an AWS EMR Cluster, which is a cluster of EC2 instances that will run our PySpark code (similar to Google's Dataproc).
+   2. [`partition_yelp_reviews`](dagster_capstone/assets/external_run_spark_job.py): This asset executes the `external_run_spark_job.py` script, which submits a spark job to the previously created cluster from the upstream asset. The spark code is defined within [`emr_spark_yelp_reviews.py`](emr-resources/spark-code/emr_spark_yelp_reviews.py). I implemented Spark here due to the size of the yelp_academic_dataset_business.json being roughly ~5GB in size. Loading that amount of data directly into memory and using Pandas to perform transformations was not practical in this scenario as it would frequently crash my orchestration tool. 
+   
+- [**Yelp**](dagster_capstone/assets/yelp.py) This module defines 3 assets which all use DuckDB to load our data from an AWS S3 bucket and ingest the data sources into Motherduck DWH as external tables.
+   - `external_yelp_reviews` 
+   - `external_yelp_users` 
+   - `external_yelp_business`
 
+- [**dbt**](dagster_capstone/assets/dbt.py) This module maps our dbt Models to Dagster Assets, which allows us to materialize our dbt models programatically. The `dbt_analytics` asset runs `dbt build --target prod` which runs each model we have defined in our dbt directory. These models include: 
+   - [`staging_yelp_reviews`](analytics/models/staging/yelp/stg_yelp_reviews.sql)
+   - [`staging_yelp_users`](analytics/models/staging/yelp/stg_yelp_users.sql)
+   - [`staging_yelp_business`](analytics/models/staging/yelp/stg_yelp_business.sql)
+   - [`fact_monthly_metrics`](analytics/models/marts/yelp/fact_monthly_metrics.sql)
+   
 ![pipeline-dag](screenshots/dagster.png)
 
 
