@@ -2,7 +2,9 @@
 
 ## Problem Statement
 
-This project aims to extract Yelp data pertaining to business data, business reviews and business users. In total, the dataset is ~8GB in size and is composed of 5 json files. When performing lightweight transformations on smaller datasets, orchestration tools such as Mage and Dagster do a good job, but when loading larger datasets into memory, such as loading 5GB directly into a Pandas dataframe, a slew of issues can arise and the need for additional computation arises. Not only is memory an important consideration, but network bandwidth and throughput limitations are also crucial in regards to extracting our data from the API and ingesting into a storage solution. The goal of the this project is to effectively extract, transform and ingest these larger than average datasets (with memory and network constraints in mind) into a data warehouse and ultimately visualize the data in a dashbaord to display insights.
+Handling large datasets such as Yelp's business reviews and user data poses a significant challenge in data processing and analytics. Traditional methods that involve loading massive datasets directly into memory can lead to system crashes and slow processing speeds. This project aims to implement a scalable solution that efficiently processes approximately 8GB of data using advanced ETL techniques and big data technologies, ensuring that insights are both accessible and actionable.
+
+## Datasets
 
 | Name                               | Size   |
 |--------------------------------------|--------|
