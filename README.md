@@ -2,12 +2,16 @@
 
 ## Problem Statement
 
-The project aims to create a dashboard with two tiles by:
-- Selecting a dataset of Yelp business reviews.
-- Creating a pipeline for processing this dataset and storing it in a data lake.
-- Moving the data from the lake to a data warehouse.
-- Transforming the data in the data warehouse to prepare it for visualization.  
-- Building a dashboard to display insights from the data effectively.
+This project aims to extract Yelp data pertaining to business data, business reviews and business users. In total, the dataset is ~8GB in size and is composed of 5 json files. When performing lightweight transformations on smaller datasets, orchestration tools such as Mage and Dagster do a good job, but when loading larger datasets into memory, such as loading 5GB directly into a Pandas dataframe, a slew of issues can arise and the need for additional computation arises. Not only is memory an important consideration, but network bandwidth and throughput limitations are also crucial in regards to extracting our data from the API and ingesting into a storage solution. The goal of the this project is to effectively extract, transform and ingest these larger than average datasets (with memory and network constraints in mind) into a data warehouse and ultimately visualize the data in a dashbaord to display insights.
+
+| Name                               | Size   |
+|--------------------------------------|--------|
+| `yelp_academic_dataset_review.json`   | 5 GB  |
+| `yelp_academic_dataset_business.json`  | 113 MB |
+| `yelp_academic_dataset_user.json`      | 3.1 GB |
+| `yelp_academic_dataset_tip.json`       | 172 MB |
+| `yelp_academic_dataset_checkin.json`   | 238 MB |
+
 
 ## Technologies
 
