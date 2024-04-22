@@ -27,7 +27,7 @@ Handling large datasets such as Yelp's business reviews and user data poses a si
 
 ## Batch Data Pipeline
 
-The project employs a **batch processing** method using `Apache Spark`, DuckDB and dbt to handle large datasets efficiently:
+The project employs a **batch processing** method using Apache Spark, DuckDB and dbt to handle large datasets efficiently:
 
 ### Pipeline Assets:
 - [**Kaggle**](dagster_capstone/assets/kaggle.py)
