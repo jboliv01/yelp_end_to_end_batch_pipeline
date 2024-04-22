@@ -29,6 +29,9 @@ Handling large datasets such as Yelp's business reviews and user data poses a si
 
 The project employs a **batch processing** method using Apache Spark, DuckDB and dbt to handle large datasets efficiently:
 
+![pipeline-dag](screenshots/dagster.png)
+
+
 ### Pipeline Assets:
 - [**Kaggle**](dagster_capstone/assets/kaggle.py)
    - `kaggle_file`: downloads and unzips the Yelp dataset from the Kaggle API and uploads it to AWS S3. This dataset consists of 5 json datasets that are ~8GB total in size.
@@ -47,7 +50,6 @@ The project employs a **batch processing** method using Apache Spark, DuckDB and
    - [`staging_yelp_business`](analytics/models/staging/yelp/stg_yelp_business.sql)
    - [`fact_monthly_metrics`](analytics/models/marts/yelp/fact_monthly_metrics.sql)
    
-![pipeline-dag](screenshots/dagster.png)
 
 
 ## Dashboard
