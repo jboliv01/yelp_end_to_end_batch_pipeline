@@ -64,26 +64,13 @@ The dashboard is implemented using Streamlit to visualize data from Motherduck:
 
 Before doing anything else, be sure to clone this repo to your local computer.
 
-### Install Dependencies
+### Project Dependencies
 
 1. **Install Python 3.10**:
    - Download and install Python 3.10 from the [official Python website](https://www.python.org/downloads/).
 
 2. **Install AWS CLI**:
    - Follow the instructions provided in the [AWS CLI documentation](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) to install AWS CLI for your operating system.
-  
-3. **Install Dagster**
-   - Install our Dagster code location as a Python package:
-    ```shell
-    pip install -e ".[dev]"
-    ```
-    
-4. **Install Streamlit**
-   - Run the following command to install [Streamlit](https://streamlit.io/#install)
-     ```shell
-     pip install streamlit
-     streamlit hello
-     ```
 
 ### **Create a Virtual Environment**
 Within the project repo, open up a terminal and run the following commands: 
@@ -100,6 +87,22 @@ Within the project repo, open up a terminal and run the following commands:
      python3.10 -m venv myenv
      .\myenv\Scripts\activate
      ```
+
+1. **Install Dagster**
+
+   Install the Dagster code location as a Python package within our newly create virtual environment.
+   
+    ```shell
+    pip install -e ".[dev]"
+    ```
+    
+3. **Install Streamlit**
+
+   As a part of `setup.py`, [Streamlit](https://streamlit.io/#install) should already be installed after running ```pip install -e "[.dev]"```, but be sure to validate by running the following command in your terminal:
+
+   ```shell
+   streamlit hello
+   ```
 
 ### **Configuring S3 Permissions**
 
