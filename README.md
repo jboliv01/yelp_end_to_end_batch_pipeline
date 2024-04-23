@@ -72,8 +72,11 @@ Before doing anything else, be sure to clone this repo to your local computer.
 2. **Install AWS CLI**:
    - Follow the instructions provided in the [AWS CLI documentation](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) to install AWS CLI for your operating system.
 
-### **Create a Virtual Environment**
-Within the project repo, open up a terminal and run the following commands: 
+### Python Dependencies
+
+1. **Create a Virtual Environment**
+
+   Within the project repo, open up a terminal and run the following commands: 
 
    - **Linux/MacOS**:
      ```bash
