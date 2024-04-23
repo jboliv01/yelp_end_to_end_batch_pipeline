@@ -66,11 +66,13 @@ Before doing anything else, be sure to clone this repo to your local computer.
 
 ### Project Dependencies
 
-1. **Install Python 3.10**:
-   - Download and install Python 3.10 from the [official Python website](https://www.python.org/downloads/).
+1. **Install Python 3.10**
 
-2. **Install AWS CLI**:
-   - Follow the instructions provided in the [AWS CLI documentation](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) to install AWS CLI for your operating system.
+   Download and install Python 3.10 from the [official Python website](https://www.python.org/downloads/).
+
+3. **Install AWS CLI**
+
+   Follow the instructions provided in the [AWS CLI documentation](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) to install AWS CLI for your operating system.
 
 ### Python Dependencies
 
