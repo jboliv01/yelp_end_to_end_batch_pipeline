@@ -2,4 +2,4 @@
 name: yelp
 type: duckdb
 options:
-  filename: md:yelp?motherduck_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uIjoiamJvbGl2MDEuZ21haWwuY29tIiwiZW1haWwiOiJqYm9saXYwMUBnbWFpbC5jb20iLCJ1c2VySWQiOiI1MzM0NzZhYy1mMjVjLTQxY2MtYmY1YS1lMGEwYzU2M2FjZWIiLCJpYXQiOjE3MTM0NDU5MjYsImV4cCI6MTc0NTAwMzUyNn0.WstgBFvEy5rEs7HoftLOzZo7r3CuT_gIDLUZVKUQY1Q
+  filename: md:yelp?motherduck_token=
